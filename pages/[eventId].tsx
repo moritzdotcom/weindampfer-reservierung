@@ -6,7 +6,7 @@ import { Session } from '@/hooks/useSession';
 import prisma from '@/lib/prismadb';
 import { GetServerSidePropsContext } from 'next';
 
-export default function ReservationPage({
+export default function EventReservationPage({
   events,
   session,
 }: {
@@ -15,7 +15,7 @@ export default function ReservationPage({
 }) {
   return (
     <>
-      <HtmlHead />
+      <HtmlHead eventName={events.length > 0 ? events[0].name : undefined} />
       <div className="w-full min-h-screen">
         {session.status == 'authenticated' && (
           <AdminHeader name={session.user.name} />
@@ -26,14 +26,18 @@ export default function ReservationPage({
   );
 }
 
-export async function getServerSideProps({ res }: GetServerSidePropsContext) {
+export async function getServerSideProps({
+  query,
+  res,
+}: GetServerSidePropsContext) {
   res.setHeader(
     'Cache-Control',
     'public, s-maxage=10, stale-while-revalidate=59'
   );
+  const eventId = query.eventId as string | undefined;
 
   const events = await prisma.event.findMany({
-    where: { date: { gte: new Date() } },
+    where: { id: eventId },
   });
 
   return {
