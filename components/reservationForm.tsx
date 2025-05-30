@@ -1,6 +1,12 @@
 import { Event } from '@/generated/prisma';
 import { fullEventName } from '@/lib/event';
-import { Dialog, DialogContent, MenuItem, TextField } from '@mui/material';
+import {
+  Dialog,
+  DialogContent,
+  Divider,
+  MenuItem,
+  TextField,
+} from '@mui/material';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import ARGBConfirmation from './argbConfirmation';
@@ -19,6 +25,10 @@ export default function ReservationForm({ events }: { events: Event[] }) {
   const [personCount, setPersonCount] = useState('');
   const [ticketsNeeded, setTicketsNeeded] = useState('yes');
   const [occasion, setOccasion] = useState('');
+  const [phone, setPhone] = useState('');
+  const [streetAddress, setStreetAddress] = useState('');
+  const [city, setCity] = useState('');
+  const [zipCode, setZipCode] = useState('');
   const [argbChecked, setArgbChecked] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -29,6 +39,10 @@ export default function ReservationForm({ events }: { events: Event[] }) {
     ticketsNeeded: '',
     submit: '',
     occasion: '',
+    phone: '',
+    streetAddress: '',
+    city: '',
+    zipCode: '',
   });
 
   const [formDirty, setFormDirty] = useState(false);
@@ -47,6 +61,10 @@ export default function ReservationForm({ events }: { events: Event[] }) {
       ticketsNeeded: '',
       submit: '',
       occasion: '',
+      phone: '',
+      streetAddress: '',
+      city: '',
+      zipCode: '',
     });
   };
 
@@ -91,6 +109,41 @@ export default function ReservationForm({ events }: { events: Event[] }) {
         occasion: 'Anlass darf nicht leer sein',
       }));
     }
+    if (!argbChecked) {
+      errorOccured = true;
+      setErrorObj((prev) => ({
+        ...prev,
+        submit: 'Bitte bestätige die ARGB-Bedingungen',
+      }));
+    }
+    if (!phone) {
+      errorOccured = true;
+      setErrorObj((prev) => ({
+        ...prev,
+        phone: 'Telefonnummer darf nicht leer sein',
+      }));
+    }
+    if (!streetAddress) {
+      errorOccured = true;
+      setErrorObj((prev) => ({
+        ...prev,
+        streetAddress: 'Straße und Hausnummer dürfen nicht leer sein',
+      }));
+    }
+    if (!city) {
+      errorOccured = true;
+      setErrorObj((prev) => ({
+        ...prev,
+        city: 'Stadt darf nicht leer sein',
+      }));
+    }
+    if (!zipCode) {
+      errorOccured = true;
+      setErrorObj((prev) => ({
+        ...prev,
+        zipCode: 'Postleitzahl darf nicht leer sein',
+      }));
+    }
     return !errorOccured;
   };
 
@@ -105,7 +158,11 @@ export default function ReservationForm({ events }: { events: Event[] }) {
         email,
         people: Number(personCount),
         ticketsNeeded: ticketsNeeded === 'yes',
-        occasion, // Include occasion in the reservation
+        occasion,
+        phone,
+        streetAddress,
+        city,
+        zipCode,
       });
       // Reset form after successful submission
       resetErrorObj();
@@ -114,6 +171,10 @@ export default function ReservationForm({ events }: { events: Event[] }) {
       setPersonCount('');
       setTicketsNeeded('yes');
       setOccasion('');
+      setPhone('');
+      setStreetAddress('');
+      setCity('');
+      setZipCode('');
       setFormDirty(false);
       setShowSuccess(true);
       setArgbChecked(false);
@@ -183,6 +244,15 @@ export default function ReservationForm({ events }: { events: Event[] }) {
             )}
             <div>
               <div className="flex flex-col gap-7">
+                <Divider
+                  sx={{
+                    ':before': { borderColor: 'var(--color-neutral-500)' },
+                    ':after': { borderColor: 'var(--color-neutral-500)' },
+                    fontSize: '1.2rem',
+                  }}
+                >
+                  Persönliche Daten
+                </Divider>
                 <TextField
                   fullWidth
                   label="Name"
@@ -203,6 +273,57 @@ export default function ReservationForm({ events }: { events: Event[] }) {
                   helperText={errorObj.email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
+                <TextField
+                  fullWidth
+                  label="Telefonnummer"
+                  autoComplete="tel"
+                  required
+                  value={phone}
+                  error={Boolean(errorObj.phone)}
+                  helperText={errorObj.phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                />
+                <TextField
+                  fullWidth
+                  label="Straße und Hausnummer"
+                  autoComplete="street-address"
+                  required
+                  value={streetAddress}
+                  error={Boolean(errorObj.streetAddress)}
+                  helperText={errorObj.streetAddress}
+                  onChange={(e) => setStreetAddress(e.target.value)}
+                />
+                <div className="flex gap-4 mb-8">
+                  <TextField
+                    fullWidth
+                    label="Postleitzahl"
+                    autoComplete="postal-code"
+                    required
+                    value={zipCode}
+                    error={Boolean(errorObj.zipCode)}
+                    helperText={errorObj.zipCode}
+                    onChange={(e) => setZipCode(e.target.value)}
+                  />
+                  <TextField
+                    fullWidth
+                    label="Stadt"
+                    autoComplete="address-level2"
+                    required
+                    value={city}
+                    error={Boolean(errorObj.city)}
+                    helperText={errorObj.city}
+                    onChange={(e) => setCity(e.target.value)}
+                  />
+                </div>
+                <Divider
+                  sx={{
+                    ':before': { borderColor: 'var(--color-neutral-500)' },
+                    ':after': { borderColor: 'var(--color-neutral-500)' },
+                    fontSize: '1.2rem',
+                  }}
+                >
+                  Angaben zur Reservierung
+                </Divider>
                 <TextField
                   label="Anzahl Personen"
                   type="number"
@@ -253,7 +374,16 @@ export default function ReservationForm({ events }: { events: Event[] }) {
                     onClick={onSubmit}
                     className="w-full bg-white hover:bg-gray-100 text-black font-semibold py-3 rounded-lg transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled={
-                      !name || !email || !personCount || !argbChecked || loading
+                      !name ||
+                      !email ||
+                      !personCount ||
+                      !argbChecked ||
+                      !occasion ||
+                      !phone ||
+                      !streetAddress ||
+                      !city ||
+                      !zipCode ||
+                      loading
                     }
                   >
                     {loading ? 'Sende Anfrage...' : 'Reservierung anfragen'}

@@ -43,8 +43,12 @@ model Reservation {
   id                  String            @id @default(uuid())
   name                String
   email               String
+  phone               String            @default("")
+  streetAddress       String            @default("")
+  city                String            @default("")
+  zipCode             String            @default("")
   people              Int
-  occasion            String?
+  occasion            String            @default("")
   ticketsNeeded       Boolean           @default(false)
   eventId             String
   event               Event             @relation(fields: [eventId], references: [id])

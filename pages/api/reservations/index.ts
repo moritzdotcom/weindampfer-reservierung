@@ -28,7 +28,18 @@ export type ApiPostReservationResponse = Prisma.ReservationGetPayload<{
 }>;
 
 async function handlePOST(req: NextApiRequest, res: NextApiResponse) {
-  const { name, email, people, ticketsNeeded, occasion, eventId } = req.body;
+  const {
+    name,
+    email,
+    people,
+    ticketsNeeded,
+    occasion,
+    eventId,
+    phone,
+    streetAddress,
+    city,
+    zipCode,
+  } = req.body;
 
   if (typeof name !== 'string') return res.status(400).json('Name is required');
   if (typeof email !== 'string')
@@ -39,6 +50,15 @@ async function handlePOST(req: NextApiRequest, res: NextApiResponse) {
     return res.status(400).json('Need tickets is required');
   if (typeof eventId !== 'string')
     return res.status(400).json('Event ID is required');
+  if (typeof occasion !== 'string')
+    return res.status(400).json('Occasion is required');
+  if (typeof phone !== 'string')
+    return res.status(400).json('Phone number is required');
+  if (typeof streetAddress !== 'string')
+    return res.status(400).json('Street address is required');
+  if (typeof city !== 'string') return res.status(400).json('City is required');
+  if (typeof zipCode !== 'string')
+    return res.status(400).json('Zip code is required');
 
   const reservation = await prisma.reservation.create({
     data: {
@@ -47,6 +67,10 @@ async function handlePOST(req: NextApiRequest, res: NextApiResponse) {
       people,
       ticketsNeeded,
       occasion,
+      phone,
+      streetAddress,
+      city,
+      zipCode,
       event: { connect: { id: eventId } },
     },
     include: {

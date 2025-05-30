@@ -95,9 +95,9 @@ export default function ReservationCard({
           transition: { duration: 0.4 },
         },
       }}
-      className="p-4 border border-gray-200 rounded-xl shadow-sm"
+      className="p-4 border border-gray-400 rounded-xl"
     >
-      <Box className="flex flex-row gap-2 justify-between items-start mb-1 flex-wrap">
+      <Box className="flex flex-row gap-2 justify-between items-start flex-wrap">
         <div className="flex flex-col sm:flex-row gap-1">
           <h6 className="text-xl font-medium">{reservation.name}</h6>
           <h6 className="text-xl font-medium">
@@ -109,11 +109,14 @@ export default function ReservationCard({
         </IconButton>
       </Box>
 
-      <Typography className="text-sm text-gray-500">
-        {reservation.email}
+      <Typography className="text-sm text-gray-400 hover:text-gray-200 transition">
+        {reservation.email} / {reservation.phone}
+      </Typography>
+      <Typography className="text-sm text-gray-400 hover:text-gray-200 transition">
+        {reservation.streetAddress}, {reservation.zipCode} {reservation.city}
       </Typography>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 my-2">
         <Typography className="text-sm mt-1 font-medium">
           {fullReservationPrice(reservation)} €
         </Typography>
@@ -131,7 +134,7 @@ export default function ReservationCard({
         </Tooltip>
       </div>
 
-      <Typography className="text-sm text-gray-600">
+      <Typography className="text-sm text-gray-400">
         {reservation.occasion}
       </Typography>
 
