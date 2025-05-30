@@ -28,6 +28,7 @@ export default function ReservationForm({ events }: { events: Event[] }) {
     personCount: '',
     ticketsNeeded: '',
     submit: '',
+    occasion: '',
   });
 
   const [formDirty, setFormDirty] = useState(false);
@@ -45,6 +46,7 @@ export default function ReservationForm({ events }: { events: Event[] }) {
       personCount: '',
       ticketsNeeded: '',
       submit: '',
+      occasion: '',
     });
   };
 
@@ -80,6 +82,13 @@ export default function ReservationForm({ events }: { events: Event[] }) {
       setErrorObj((prev) => ({
         ...prev,
         ticketsNeeded: 'Bitte wähle eine Option',
+      }));
+    }
+    if (!occasion) {
+      errorOccured = true;
+      setErrorObj((prev) => ({
+        ...prev,
+        occasion: 'Anlass darf nicht leer sein',
       }));
     }
     return !errorOccured;
@@ -219,8 +228,11 @@ export default function ReservationForm({ events }: { events: Event[] }) {
                 </TextField>
                 <TextField
                   fullWidth
-                  label="Anlass (optional)"
+                  label="Anlass"
                   value={occasion}
+                  required
+                  error={Boolean(errorObj.occasion)}
+                  helperText={errorObj.occasion}
                   onChange={(e) => setOccasion(e.target.value)}
                   placeholder="z.B. Geburtstag, Jubiläum, etc."
                 />
