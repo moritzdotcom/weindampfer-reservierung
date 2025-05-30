@@ -66,11 +66,11 @@ export default function ReservationForm({ events }: { events: Event[] }) {
         email: 'E-Mail darf nicht leer sein',
       }));
     }
-    if (Number(personCount) < 1 || Number(personCount) > 16) {
+    if (Number(personCount) < 1 || Number(personCount) > 25) {
       errorOccured = true;
       setErrorObj((prev) => ({
         ...prev,
-        personCount: 'Anzahl muss zwischen 1 und 16 liegen',
+        personCount: 'Anzahl muss zwischen 1 und 25 liegen',
       }));
     }
     if (!name) {
@@ -209,7 +209,7 @@ export default function ReservationForm({ events }: { events: Event[] }) {
                   required
                   error={Boolean(errorObj.personCount)}
                   helperText={errorObj.personCount}
-                  slotProps={{ htmlInput: { min: 1, max: 16 } }}
+                  slotProps={{ htmlInput: { min: 1, max: 25 } }}
                   value={personCount}
                   onChange={(e) => setPersonCount(e.target.value)}
                   fullWidth
