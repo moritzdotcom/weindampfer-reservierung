@@ -64,6 +64,12 @@ export default function BackendRequestsPage({ session }: { session: Session }) {
     );
   }, [reservations, selectedConfirmationState]);
 
+  const confirmedReservations = useMemo(() => {
+    return (
+      reservations?.filter((r) => r.confirmationState === 'CONFIRMED') || []
+    );
+  }, [reservations]);
+
   const updateState = async (
     reservationId: string,
     state: ConfirmationState
@@ -155,11 +161,15 @@ export default function BackendRequestsPage({ session }: { session: Session }) {
         <div>
           <div className="flex justify-between text-sky-600">
             <p className="text-lg font-medium text-gray-200">
-              {
-                reservations?.filter((r) => r.confirmationState === 'CONFIRMED')
-                  .length
-              }{' '}
-              Bestätigte Reservierungen
+              {confirmedReservations.length} Bestätigte Reservierungen
+              <br />
+              {confirmedReservations.reduce((sum, r) => sum + r.people, 0)}{' '}
+              Personen
+              <br />
+              {confirmedReservations
+                .filter((r) => r.ticketsNeeded)
+                .reduce((sum, r) => sum + r.people, 0)}{' '}
+              Tickets benötigt
             </p>
             <SortButton
               options={[

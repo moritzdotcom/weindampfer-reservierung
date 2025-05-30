@@ -145,6 +145,31 @@ export default function BackendReservationsPage({
               animate="show"
               className="space-y-8"
             >
+              <motion.div
+                variants={{
+                  hidden: { opacity: 0, x: -30 },
+                  show: {
+                    opacity: 1,
+                    x: 0,
+                    transition: { duration: 0.4 },
+                  },
+                }}
+              >
+                <p className="text-lg font-medium text-gray-200 mb-4">
+                  {filteredReservations.length} Bestätigte Reservierungen
+                  <br />
+                  {filteredReservations.reduce(
+                    (sum, r) => sum + r.people,
+                    0
+                  )}{' '}
+                  Personen
+                  <br />
+                  {filteredReservations
+                    .filter((r) => r.ticketsNeeded)
+                    .reduce((sum, r) => sum + r.people, 0)}{' '}
+                  Tickets benötigt
+                </p>
+              </motion.div>
               {filteredReservations
                 .sort(
                   (a, b) =>
