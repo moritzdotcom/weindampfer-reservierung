@@ -1,7 +1,6 @@
 import { Prisma } from '@/generated/prisma';
 import sendReservationConfirmationMail from '@/lib/mailer/reservationConfirmationMail';
 import prisma from '@/lib/prismadb';
-import { getServerSession } from '@/lib/session';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handle(
@@ -37,6 +36,7 @@ async function handlePOST(req: NextApiRequest, res: NextApiResponse) {
     eventId,
     phone,
     streetAddress,
+    tableType,
     city,
     zipCode,
   } = req.body;
@@ -69,6 +69,7 @@ async function handlePOST(req: NextApiRequest, res: NextApiResponse) {
       occasion,
       phone,
       streetAddress,
+      tableType,
       city,
       zipCode,
       event: { connect: { id: eventId } },

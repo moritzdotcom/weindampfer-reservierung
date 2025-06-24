@@ -108,7 +108,9 @@ export default function ReservationCard({
           <MoreHorizIcon />
         </IconButton>
       </Box>
-
+      <Typography className="text-gray-400 hover:text-gray-200 transition">
+        {reservation.tableType}
+      </Typography>
       <Typography className="text-sm text-gray-400 hover:text-gray-200 transition">
         {reservation.email} / {reservation.phone}
       </Typography>

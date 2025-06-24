@@ -23,6 +23,7 @@ export default function ReservationForm({ events }: { events: Event[] }) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [personCount, setPersonCount] = useState('');
+  const [tableType, setTableType] = useState('Stehtisch');
   const [ticketsNeeded, setTicketsNeeded] = useState('yes');
   const [occasion, setOccasion] = useState('');
   const [phone, setPhone] = useState('');
@@ -157,6 +158,7 @@ export default function ReservationForm({ events }: { events: Event[] }) {
         name,
         email,
         people: Number(personCount),
+        tableType,
         ticketsNeeded: ticketsNeeded === 'yes',
         occasion,
         phone,
@@ -169,6 +171,7 @@ export default function ReservationForm({ events }: { events: Event[] }) {
       setName('');
       setEmail('');
       setPersonCount('');
+      setTableType('Stehtisch');
       setTicketsNeeded('yes');
       setOccasion('');
       setPhone('');
@@ -335,6 +338,20 @@ export default function ReservationForm({ events }: { events: Event[] }) {
                   onChange={(e) => setPersonCount(e.target.value)}
                   fullWidth
                 />
+                <TextField
+                  select
+                  label="Tischart wählen"
+                  fullWidth
+                  value={tableType}
+                  onChange={(e) => {
+                    setTableType(e.target.value);
+                  }}
+                >
+                  <MenuItem value="Stehtisch">
+                    Stehtisch auf der Tanzfläche
+                  </MenuItem>
+                  <MenuItem value="Empore">Tisch auf der Empore</MenuItem>
+                </TextField>
                 <TextField
                   select
                   label="Benötigst du Tickets?"

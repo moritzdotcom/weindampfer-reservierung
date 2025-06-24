@@ -50,6 +50,7 @@ model Reservation {
   people              Int
   occasion            String            @default("")
   ticketsNeeded       Boolean           @default(false)
+  tableType           String            @default("")
   eventId             String
   event               Event             @relation(fields: [eventId], references: [id])
   confirmationState   ConfirmationState @default(REQUESTED)

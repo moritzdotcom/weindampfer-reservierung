@@ -290,6 +290,7 @@ function ReservationCard({
           <p className="my-1 text-neutral-200">
             {reservation.email} / {reservation.phone}
           </p>
+          <p className="my-1 text-neutral-200">{reservation.tableType}</p>
           <p className="my-1 text-neutral-300">{reservation.occasion}</p>
           <div className="flex items-center gap-2 my-1">
             <p className="my-1 text-neutral-400">
