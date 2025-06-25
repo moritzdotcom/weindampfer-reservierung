@@ -14,7 +14,7 @@ import {
 import { motion } from 'framer-motion';
 import DownloadIcon from '@mui/icons-material/Download';
 import { ApiGetReservationsResponse } from '../api/events/[eventId]/reservations';
-import { formatEventDate } from '@/lib/event';
+import { formatEventDate, fullEventName } from '@/lib/event';
 import ReservationCard from '@/components/reservationCard';
 
 export default function BackendReservationsPage({
@@ -116,7 +116,7 @@ export default function BackendReservationsPage({
         >
           {events.map((event) => (
             <MenuItem key={event.id} value={event.id}>
-              {event.name}
+              {fullEventName(event)}
             </MenuItem>
           ))}
         </TextField>

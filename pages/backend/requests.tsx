@@ -17,6 +17,7 @@ import { ConfirmationState } from '@/generated/prisma';
 import { ApiGetReservationsResponse } from '../api/events/[eventId]/reservations';
 import { translateState, translateStateAdj } from '@/lib/reservation';
 import { WarningAmber } from '@mui/icons-material';
+import { fullEventName } from '@/lib/event';
 
 export default function BackendRequestsPage({ session }: { session: Session }) {
   const router = useRouter();
@@ -136,7 +137,7 @@ export default function BackendRequestsPage({ session }: { session: Session }) {
         >
           {events.map((event) => (
             <MenuItem key={event.id} value={event.id}>
-              {event.name}
+              {fullEventName(event)}
             </MenuItem>
           ))}
         </TextField>
