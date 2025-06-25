@@ -18,6 +18,7 @@ import { ApiGetReservationsResponse } from '../api/events/[eventId]/reservations
 import { translateState, translateStateAdj } from '@/lib/reservation';
 import { WarningAmber } from '@mui/icons-material';
 import { fullEventName } from '@/lib/event';
+import BackendBackButton from '@/components/backendBackButton';
 
 export default function BackendRequestsPage({ session }: { session: Session }) {
   const router = useRouter();
@@ -120,7 +121,8 @@ export default function BackendRequestsPage({ session }: { session: Session }) {
   }, [selectedEventId]);
 
   return (
-    <Box className="max-w-5xl mx-auto px-4 py-16 overflow-x-hidden">
+    <Box className="max-w-5xl mx-auto px-4 py-8 overflow-x-hidden">
+      <BackendBackButton />
       <Typography variant="h4" gutterBottom>
         Reservierungsanfragen
       </Typography>

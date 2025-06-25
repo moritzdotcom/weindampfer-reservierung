@@ -16,6 +16,7 @@ import { ApiGetEventsResponse } from '../api/events';
 import { ApiPutEventResponse } from '../api/events/[eventId]';
 import { formatEventDate } from '@/lib/event';
 import { Check, CopyAll, Edit } from '@mui/icons-material';
+import BackendBackButton from '@/components/backendBackButton';
 
 export default function BackendEventsPage({ session }: { session: Session }) {
   const [events, setEvents] = useState<ApiGetEventsResponse>([]);
@@ -49,7 +50,8 @@ export default function BackendEventsPage({ session }: { session: Session }) {
   }, [session.status, router.isReady]);
 
   return (
-    <Box className="max-w-5xl mx-auto px-4 py-16">
+    <Box className="max-w-5xl mx-auto px-4 py-8">
+      <BackendBackButton />
       <Box className="flex flex-col sm:flex-row gap-3 justify-between items-center mb-6">
         <h4 className="text-3xl text-center">Veranstaltungen verwalten</h4>
         <button

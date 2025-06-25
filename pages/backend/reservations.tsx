@@ -16,6 +16,7 @@ import DownloadIcon from '@mui/icons-material/Download';
 import { ApiGetReservationsResponse } from '../api/events/[eventId]/reservations';
 import { formatEventDate, fullEventName } from '@/lib/event';
 import ReservationCard from '@/components/reservationCard';
+import BackendBackButton from '@/components/backendBackButton';
 
 export default function BackendReservationsPage({
   session,
@@ -83,7 +84,8 @@ export default function BackendReservationsPage({
   }, [selectedEventId]);
 
   return (
-    <Box className="max-w-5xl mx-auto px-4 py-16 overflow-x-hidden">
+    <Box className="max-w-5xl mx-auto px-4 py-8 overflow-x-hidden">
+      <BackendBackButton />
       <Box className="flex flex-col md:flex-row gap-3 justify-between items-center mb-6">
         <Typography variant="h4">Reservierungen</Typography>
         {selectedEvent && (
