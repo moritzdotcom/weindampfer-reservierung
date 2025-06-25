@@ -85,11 +85,11 @@ export default function ReservationForm({ events }: { events: Event[] }) {
         email: 'E-Mail darf nicht leer sein',
       }));
     }
-    if (Number(personCount) < 1 || Number(personCount) > 25) {
+    if (Number(personCount) < 6 || Number(personCount) > 25) {
       errorOccured = true;
       setErrorObj((prev) => ({
         ...prev,
-        personCount: 'Anzahl muss zwischen 1 und 25 liegen',
+        personCount: 'Anzahl muss zwischen 6 und 25 liegen',
       }));
     }
     if (!name) {
@@ -226,6 +226,43 @@ export default function ReservationForm({ events }: { events: Event[] }) {
           <div></div>
         ) : (
           <div>
+            <div className="text-neutral-400 leading-relaxed text-base sm:text-lg mt-8">
+              <p className="text-white text-xl font-semibold block mb-2">
+                Willkommen an Bord, liebe Weindampfer-Gäste!
+              </p>
+              Hier könnt ihr ganz einfach euren Tisch für unsere Events
+              reservieren - perfekt für Gruppen, die stilvoll feiern wollen.
+              <br />
+              <br />
+              <p className="text-white font-medium">
+                Eure Vorteile auf einen Blick:
+              </p>
+              <ul className="list-disc list-outside ml-4 mt-2 mb-4">
+                <li>Eigener Tisch & reservierter Bereich</li>
+                <li>Persönlicher Tischkellner</li>
+                <li>Schnellerer Einlass über den VIP-Check-In</li>
+                <li>Garantierte Tickets für die gesamte Gruppe</li>
+              </ul>
+              <p className="text-white font-medium">
+                So läuft die Reservierung ab:
+              </p>
+              <ul className="list-disc list-outside ml-4 mt-2 mb-4">
+                <li>Formular ausfüllen & absenden</li>
+                <li>Wir prüfen eure Anfrage und bestätigen sie per Mail</li>
+                <li>
+                  Ihr erhaltet eine Rechnung - Zahlung innerhalb von 7 Tagen
+                </li>
+                <li>
+                  Nach Geldeingang erhaltet ihr eure finalen Unterlagen /
+                  Tickets
+                </li>
+                <li>Am Eventtag: Kommt vorbei & genießt die Fahrt!</li>
+              </ul>
+              Wir freuen uns auf euch!
+              <br />
+              <p className="mt-4 block">Euer Weindampfer-Team</p>
+            </div>
+
             {events.length > 1 && (
               <div className="my-12">
                 <TextField
@@ -333,7 +370,7 @@ export default function ReservationForm({ events }: { events: Event[] }) {
                   required
                   error={Boolean(errorObj.personCount)}
                   helperText={errorObj.personCount}
-                  slotProps={{ htmlInput: { min: 1, max: 25 } }}
+                  slotProps={{ htmlInput: { min: 6, max: 25 } }}
                   value={personCount}
                   onChange={(e) => setPersonCount(e.target.value)}
                   fullWidth

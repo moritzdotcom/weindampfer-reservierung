@@ -237,7 +237,7 @@ export default function ReservationCard({
             className="border border-sky-500 text-sky-500 px-3 py-2 rounded-full flex items-center gap-1 text-base"
           >
             <MailOutlineIcon fontSize="inherit" />
-            <span>Benachrichtigen</span>
+            <span>{notifying ? 'Lädt...' : 'Benachrichtigen'}</span>
           </button>
         )}
       </div>
