@@ -16,12 +16,18 @@ export function sendMail({
   text,
   html,
   sendCopy,
+  attachments,
 }: {
   to: string;
   subject: string;
   text: string;
   html?: string;
   sendCopy?: boolean;
+  attachments?: {
+    filename: string;
+    content: Buffer | string;
+    contentType?: string;
+  }[];
 }) {
   return transporter.sendMail({
     from: process.env.MAIL_FROM,
@@ -30,5 +36,6 @@ export function sendMail({
     subject,
     text,
     html,
+    attachments,
   });
 }

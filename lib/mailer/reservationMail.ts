@@ -5,7 +5,12 @@ export default function sendReservationMail(
   name: string,
   people: string,
   date: string,
-  price: number
+  price: number,
+  attachments?: {
+    filename: string;
+    content: Buffer | string;
+    contentType?: string;
+  }[]
 ) {
   return sendMail({
     to: email,
@@ -88,5 +93,6 @@ export default function sendReservationMail(
   </table>
 </body>
 </html>`,
+    attachments,
   });
 }

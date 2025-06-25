@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useRef, useState } from 'react';
+import { FormEvent, useRef, useState } from 'react';
 import { ApiGetReservationsResponse } from '@/pages/api/events/[eventId]/reservations';
 import {
   Box,
@@ -42,6 +42,8 @@ export default function ReservationCard({
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   const [cancelReason, setCancelReason] = useState('');
 
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
   const handleConfirmPayment = async () => {
     await axios.put(`/api/reservations/${reservation.id}`, { payed: true });
     onUpdate({ ...reservation, payed: true });
@@ -83,6 +85,51 @@ export default function ReservationCard({
       setSavingTableNumber(false);
     }, 1000);
   };
+
+  async function handleUploadInvoice(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const file = formData.get('file') as File;
+
+    if (!file || file.type !== 'application/pdf') {
+      alert('Bitte eine PDF-Datei hochladen.');
+      return;
+    }
+
+    try {
+      const { data } = await axios.post(
+        `/api/reservations/${reservation.id}/uploadInvoice`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+      onUpdate({
+        ...reservation,
+        invoiceUrl: data.invoiceUrl,
+      });
+      alert('Rechnung erfolgreich hochgeladen!');
+    } catch (error) {
+      console.error('Fehler beim Hochladen der Rechnung:', error);
+      alert('Fehler beim Hochladen der Rechnung. Bitte versuche es erneut.');
+    }
+  }
+
+  async function fetchInvoiceUrl(invoicePath: string) {
+    console.log(reservation);
+    const res = await fetch(
+      `/api/reservations/invoiceUrl?path=${encodeURIComponent(invoicePath)}`
+    );
+    const json = await res.json();
+
+    if (json.url) {
+      window.open(json.url, '_blank');
+    } else {
+      alert('Fehler beim Laden der Rechnung');
+    }
+  }
 
   return (
     <motion.div
@@ -192,6 +239,45 @@ export default function ReservationCard({
             <MailOutlineIcon fontSize="inherit" />
             <span>Benachrichtigen</span>
           </button>
+        )}
+      </div>
+      <div className="mt-5">
+        <Divider />
+        {reservation.invoiceUrl ? (
+          <div className="mt-2 text-sm text-gray-400">
+            <span className="mr-2">Bereits hochgeladen:</span>
+            <button
+              className="text-sky-500 underline hover:text-sky-400"
+              onClick={() => fetchInvoiceUrl(reservation.invoiceUrl || '')}
+            >
+              Rechnung herunterladen
+            </button>
+          </div>
+        ) : (
+          <form
+            onSubmit={handleUploadInvoice}
+            className="flex flex-col sm:flex-row items-start sm:items-center gap-4 py-4"
+          >
+            <label className="inline-flex items-center px-4 py-2 bg-white text-black border border-gray-300 rounded-lg shadow cursor-pointer hover:bg-gray-100 transition">
+              <input
+                type="file"
+                name="file"
+                accept="application/pdf"
+                className="hidden"
+                onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+              />
+              📎 PDF auswählen
+            </label>
+            {selectedFile && (
+              <p className="text-sm text-gray-400">{selectedFile.name}</p>
+            )}
+            <button
+              type="submit"
+              className="bg-black text-white px-4 py-2 rounded-lg shadow hover:bg-gray-800 transition"
+            >
+              Rechnung hochladen
+            </button>
+          </form>
         )}
       </div>
       <Menu

@@ -55,6 +55,7 @@ model Reservation {
   event               Event             @relation(fields: [eventId], references: [id])
   confirmationState   ConfirmationState @default(REQUESTED)
   tableNumber         String?
+  invoiceUrl          String?
   payed               Boolean           @default(false)
   notified            DateTime?
   paymentReminderSent DateTime?
