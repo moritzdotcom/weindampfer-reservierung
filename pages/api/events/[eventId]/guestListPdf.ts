@@ -50,14 +50,14 @@ async function handleGET(
   // Logo
   const logoPath = path.resolve('./public/logo-black.png');
   if (fs.existsSync(logoPath)) {
-    doc.image(logoPath, doc.page.width / 2 - 100, 40, { width: 200 });
+    doc.image(logoPath, doc.page.width / 2 - 100, 20, { width: 200 });
   }
-  doc.moveDown(6);
+  doc.moveDown(5);
 
   doc
     .fontSize(18)
     .text(`Gästeliste ${fullEventName(event)}`, { align: 'center' });
-  doc.moveDown(2);
+  doc.moveDown(1);
 
   // Tabelle
   const tableTop = doc.y;
@@ -75,7 +75,7 @@ async function handleGET(
   headers.forEach((text, i) => {
     doc
       .font('Helvetica-Bold')
-      .fontSize(14)
+      .fontSize(13)
       .fillColor('black')
       .text(text, x + 4, tableTop, {
         width: colWidths[i],
@@ -88,7 +88,7 @@ async function handleGET(
   event.reservations
     .sort((a, b) => (a.tableNumber || '').localeCompare(b.tableNumber || ''))
     .forEach((r, idx) => {
-      const rowTop = tableTop + 28 + idx * 40;
+      const rowTop = tableTop + 28 + idx * 32;
       const values = [r.name, r.people.toString(), r.tableNumber || '', ''];
 
       // Horizontale Linie oben
@@ -103,9 +103,9 @@ async function handleGET(
       values.forEach((text, i) => {
         doc
           .font('Helvetica')
-          .fontSize(14)
+          .fontSize(12)
           .fillColor('black')
-          .text(text, xPos + 6, rowTop + 8, {
+          .text(text, xPos + 6, rowTop + 7, {
             width: colWidths[i] - 8,
             align: 'left',
           });
@@ -115,13 +115,19 @@ async function handleGET(
     });
 
   // horizontale Linie unter letzter Zeile
-  const endY = tableTop + 28 + event.reservations.length * 40 - 5;
+  const endY = tableTop + 28 + event.reservations.length * 32 - 5;
   doc
     .moveTo(40, endY)
     .lineTo(40 + colWidths.reduce((a, b) => a + b, 0), endY)
     .strokeColor('#000000')
     .stroke();
 
-  doc.moveDown(4);
+  doc.moveDown(3);
+  const boatLayout = path.resolve('./public/rheinfaehre-layout.jpg');
+  if (fs.existsSync(boatLayout)) {
+    doc.image(boatLayout, 50, doc.y, {
+      width: doc.page.width - 100,
+    });
+  }
   doc.end();
 }
