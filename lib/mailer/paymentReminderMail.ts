@@ -10,7 +10,7 @@ export default function sendPaymentReminderMail(
   return sendMail({
     to: email,
     sendCopy: true,
-    subject: 'Zahlungserinnerung für deine Weinzelt-Reservierung',
+    subject: 'Zahlungserinnerung für deine Weindampfer-Reservierung',
     text: `Hallo ${name},\n\nmanchmal schmeckt der Wein so gut, dass wir die wichtigen Dinge aus den Augen verlieren - uns ist aufgefallen, dass die Zahlung von ${price} € für deine Reservierung (${people} Pers. am ${date}) noch aussteht.\n\nBitte überweise den Betrag innerhalb der nächsten 3 Tage, sonst müssen wir deine Reservierung leider stornieren.\n\nLiebe Grüße,\nDein Weindampfer-Team`,
     html: `<!DOCTYPE html>
 <html lang="de">
@@ -79,7 +79,7 @@ export default function sendPaymentReminderMail(
           <!-- Abschiedsfloskel -->
           <tr>
             <td style="padding:0 20px 20px; color:#333333; font-size:14px; line-height:1.5;">
-              Wir freuen uns darauf, dich bald im Weinzelt zu begrüßen!<br/><br/>
+              Wir freuen uns darauf, dich bald auf dem Weindampfer zu begrüßen!<br/><br/>
               Liebe Grüße<br/>
               Dein Weindampfer-Team
             </td>

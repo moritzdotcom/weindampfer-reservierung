@@ -10,8 +10,8 @@ export default function sendReservationCancelMail(
   return sendMail({
     to: email,
     sendCopy: true,
-    subject: 'Deine Weinzelt-Reservierung wurde storniert',
-    text: `Hallo ${name}, leider müssen wir deine Reservierung für ${people} Personen am ${date} stornieren. Grund: ${reason}. Wir hoffen, dich dennoch bald im Weinzelt begrüßen zu dürfen. Liebe Grüße, Dein Weindampfer-Team`,
+    subject: 'Deine Weindampfer-Reservierung wurde storniert',
+    text: `Hallo ${name}, leider müssen wir deine Reservierung für ${people} Personen am ${date} stornieren. Grund: ${reason}. Wir hoffen, dich dennoch bald auf dem Weindampfer begrüßen zu dürfen. Liebe Grüße, Dein Weindampfer-Team`,
     html: `<!DOCTYPE html>
 <html lang="de">
 <head>
