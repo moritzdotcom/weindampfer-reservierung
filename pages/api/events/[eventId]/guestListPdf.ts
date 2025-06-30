@@ -25,6 +25,8 @@ export default async function handle(
   }
 }
 
+type TableItem = { text: string; align: 'left' | 'right' };
+
 async function handleGET(
   req: NextApiRequest,
   res: NextApiResponse,
@@ -63,23 +65,30 @@ async function handleGET(
   const tableTop = doc.y;
   // const colWidths = [230, 80, 100, 90];
   const colWidths = [
-    ((doc.page.width - 80) / 100) * 48,
+    ((doc.page.width - 80) / 100) * 38,
     ((doc.page.width - 80) / 100) * 15,
     ((doc.page.width - 80) / 100) * 20,
     ((doc.page.width - 80) / 100) * 17,
+    ((doc.page.width - 80) / 100) * 10,
   ];
-  const headers = ['Name', 'Personen', 'Tischnummer', 'Eingecheckt'];
+  const headers: TableItem[] = [
+    { text: 'Name', align: 'left' },
+    { text: 'Personen', align: 'right' },
+    { text: 'Tischnummer', align: 'right' },
+    { text: 'Eingecheckt', align: 'right' },
+    { text: 'MVZ', align: 'right' },
+  ];
 
   // Header-Zeile zeichnen
   let x = 40;
-  headers.forEach((text, i) => {
+  headers.forEach(({ text, align }, i) => {
     doc
       .font('Helvetica-Bold')
       .fontSize(13)
       .fillColor('black')
-      .text(text, x + 4, tableTop, {
+      .text(text, x, tableTop, {
         width: colWidths[i],
-        align: 'left',
+        align,
       });
     x += colWidths[i];
   });
@@ -89,7 +98,13 @@ async function handleGET(
     .sort((a, b) => (a.tableNumber || '').localeCompare(b.tableNumber || ''))
     .forEach((r, idx) => {
       const rowTop = tableTop + 28 + idx * 32;
-      const values = [r.name, r.people.toString(), r.tableNumber || '', ''];
+      const values: TableItem[] = [
+        { text: r.name, align: 'left' },
+        { text: r.people.toString(), align: 'right' },
+        { text: r.tableNumber || '', align: 'right' },
+        { text: '', align: 'left' },
+        { text: `${event.minimumSpend * r.people} €`, align: 'right' },
+      ];
 
       // Horizontale Linie oben
       doc
@@ -100,14 +115,14 @@ async function handleGET(
 
       // Inhalte mit vertikalen Linien
       let xPos = 40;
-      values.forEach((text, i) => {
+      values.forEach(({ text, align }, i) => {
         doc
           .font('Helvetica')
           .fontSize(12)
           .fillColor('black')
           .text(text, xPos + 6, rowTop + 7, {
             width: colWidths[i] - 8,
-            align: 'left',
+            align,
           });
 
         xPos += colWidths[i];
