@@ -1,4 +1,5 @@
 import { Prisma } from '@/generated/prisma';
+import sendReservationDeclinedMail from '@/lib/mailer/reservationDeclinedMail';
 import prisma from '@/lib/prismadb';
 import { getServerSession } from '@/lib/session';
 import { NextApiRequest, NextApiResponse } from 'next';
@@ -35,7 +36,23 @@ async function handlePUT(
   const reservation = await prisma.reservation.update({
     data: { confirmationState, tableNumber },
     where: { id },
+    include: {
+      event: {
+        select: {
+          date: true,
+        },
+      },
+    },
   });
+
+  if (confirmationState === 'CANCELLED') {
+    await sendReservationDeclinedMail(
+      reservation.email,
+      reservation.name,
+      reservation.people.toString(),
+      reservation.event.date.toLocaleDateString('de-DE')
+    );
+  }
 
   return res.json(reservation);
 }
