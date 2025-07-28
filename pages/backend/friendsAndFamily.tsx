@@ -21,7 +21,7 @@ export default function BackendFriendsAndFamilyPage({
   const [tableType, setTableType] = useState('Stehtisch');
   const [ticketsNeeded, setTicketsNeeded] = useState('yes');
   const [occasion, setOccasion] = useState(
-    `Friends & Family - Eingeladen von ${session.user.name}`
+    `Friends & Family - Eingeladen von ${session?.user?.name}`
   );
 
   const [errorObj, setErrorObj] = useState({
@@ -119,7 +119,7 @@ export default function BackendFriendsAndFamilyPage({
       setPersonCount('');
       setTableType('Stehtisch');
       setTicketsNeeded('yes');
-      setOccasion(`Friends & Family - Eingeladen von ${session.user.name}`);
+      setOccasion(`Friends & Family - Eingeladen von ${session?.user?.name}`);
       setFormDirty(false);
       setShowSuccess(true);
     } catch (error) {
@@ -200,87 +200,89 @@ export default function BackendFriendsAndFamilyPage({
         Persönliche Daten
       </Divider>
 
-      <div className="mt-5 flex flex-col gap-7">
-        <TextField
-          fullWidth
-          label="Name"
-          autoComplete="name"
-          required
-          error={Boolean(errorObj.name)}
-          helperText={errorObj.name}
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-        <TextField
-          fullWidth
-          label="E-Mail"
-          autoComplete="email"
-          required
-          value={email}
-          error={Boolean(errorObj.email)}
-          helperText={errorObj.email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <TextField
-          label="Anzahl Personen"
-          type="number"
-          required
-          error={Boolean(errorObj.personCount)}
-          helperText={errorObj.personCount}
-          slotProps={{ htmlInput: { min: 6, max: 25 } }}
-          value={personCount}
-          onChange={(e) => setPersonCount(e.target.value)}
-          fullWidth
-        />
-        <TextField
-          select
-          label="Tischart wählen"
-          fullWidth
-          value={tableType}
-          onChange={(e) => {
-            setTableType(e.target.value);
-          }}
-        >
-          <MenuItem value="Stehtisch">Stehtisch auf der Tanzfläche</MenuItem>
-          <MenuItem value="Empore">Tisch auf der Empore</MenuItem>
-        </TextField>
-        <TextField
-          select
-          label="Tickets benötigt?"
-          value={ticketsNeeded}
-          onChange={(e) => setTicketsNeeded(e.target.value)}
-          fullWidth
-          error={Boolean(errorObj.ticketsNeeded)}
-          helperText={errorObj.ticketsNeeded}
-        >
-          <MenuItem value="yes">Ja</MenuItem>
-          <MenuItem value="no">Nein</MenuItem>
-        </TextField>
-        <TextField
-          fullWidth
-          label="Anlass"
-          value={occasion}
-          required
-          error={Boolean(errorObj.occasion)}
-          helperText={errorObj.occasion}
-          onChange={(e) => setOccasion(e.target.value)}
-          placeholder="z.B. Geburtstag, Jubiläum, etc."
-        />
-        <div>
-          {errorObj.submit && (
-            <div className="text-red-500 text-sm mb-2 text-center">
-              {errorObj.submit}
-            </div>
-          )}
-          <button
-            onClick={onSubmit}
-            className="w-full bg-white hover:bg-gray-100 text-black font-semibold py-3 rounded-lg transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-            disabled={!name || !email || !personCount || !occasion || loading}
+      {selectedEvent && (
+        <div className="mt-5 flex flex-col gap-7">
+          <TextField
+            fullWidth
+            label="Name"
+            autoComplete="name"
+            required
+            error={Boolean(errorObj.name)}
+            helperText={errorObj.name}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+          <TextField
+            fullWidth
+            label="E-Mail"
+            autoComplete="email"
+            required
+            value={email}
+            error={Boolean(errorObj.email)}
+            helperText={errorObj.email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <TextField
+            label="Anzahl Personen"
+            type="number"
+            required
+            error={Boolean(errorObj.personCount)}
+            helperText={errorObj.personCount}
+            slotProps={{ htmlInput: { min: 6, max: 25 } }}
+            value={personCount}
+            onChange={(e) => setPersonCount(e.target.value)}
+            fullWidth
+          />
+          <TextField
+            select
+            label="Tischart wählen"
+            fullWidth
+            value={tableType}
+            onChange={(e) => {
+              setTableType(e.target.value);
+            }}
           >
-            {loading ? 'Senden...' : 'Reservierung erstellen'}
-          </button>
+            <MenuItem value="Stehtisch">Stehtisch auf der Tanzfläche</MenuItem>
+            <MenuItem value="Empore">Tisch auf der Empore</MenuItem>
+          </TextField>
+          <TextField
+            select
+            label="Tickets benötigt?"
+            value={ticketsNeeded}
+            onChange={(e) => setTicketsNeeded(e.target.value)}
+            fullWidth
+            error={Boolean(errorObj.ticketsNeeded)}
+            helperText={errorObj.ticketsNeeded}
+          >
+            <MenuItem value="yes">Ja</MenuItem>
+            <MenuItem value="no">Nein</MenuItem>
+          </TextField>
+          <TextField
+            fullWidth
+            label="Anlass"
+            value={occasion}
+            required
+            error={Boolean(errorObj.occasion)}
+            helperText={errorObj.occasion}
+            onChange={(e) => setOccasion(e.target.value)}
+            placeholder="z.B. Geburtstag, Jubiläum, etc."
+          />
+          <div>
+            {errorObj.submit && (
+              <div className="text-red-500 text-sm mb-2 text-center">
+                {errorObj.submit}
+              </div>
+            )}
+            <button
+              onClick={onSubmit}
+              className="w-full bg-white hover:bg-gray-100 text-black font-semibold py-3 rounded-lg transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={!name || !email || !personCount || !occasion || loading}
+            >
+              {loading ? 'Senden...' : 'Reservierung erstellen'}
+            </button>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
