@@ -161,9 +161,11 @@ export default function ReservationCard({
       <Typography className="text-sm text-gray-400 hover:text-gray-200 transition">
         {reservation.email} / {reservation.phone}
       </Typography>
-      <Typography className="text-sm text-gray-400 hover:text-gray-200 transition">
-        {reservation.streetAddress}, {reservation.zipCode} {reservation.city}
-      </Typography>
+      {reservation.streetAddress && (
+        <Typography className="text-sm text-gray-400 hover:text-gray-200 transition">
+          {reservation.streetAddress}, {reservation.zipCode} {reservation.city}
+        </Typography>
+      )}
 
       <div className="flex items-center gap-2 my-2">
         <Typography className="text-sm mt-1 font-medium">
