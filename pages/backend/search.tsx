@@ -268,18 +268,24 @@ export default function BackendSearchReservationPage({
                         </TableCell>
                         <TableCell>{reservation.occasion}</TableCell>
                         <TableCell>
-                          <button
-                            className="text-sky-400 hover:text-sky-600 transition"
-                            onClick={() => setSelectedReservation(reservation)}
-                          >
-                            Bearbeiten
-                          </button>
-                          <button
-                            className="text-red-500 hover:text-red-700 transition"
-                            onClick={() => handleDeleteReservation(reservation)}
-                          >
-                            Löschen
-                          </button>
+                          <div className="flex flex-col gap-1">
+                            <button
+                              className="text-sky-400 hover:text-sky-600 transition"
+                              onClick={() =>
+                                setSelectedReservation(reservation)
+                              }
+                            >
+                              Bearbeiten
+                            </button>
+                            <button
+                              className="text-red-500 hover:text-red-700 transition"
+                              onClick={() =>
+                                handleDeleteReservation(reservation)
+                              }
+                            >
+                              Löschen
+                            </button>
+                          </div>
                         </TableCell>
                       </TableRow>
                     ))}
