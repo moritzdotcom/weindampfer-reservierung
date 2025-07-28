@@ -17,6 +17,8 @@ export default async function handle(
 
   if (req.method === 'PUT') {
     await handlePUT(req, res, reservationId);
+  } else if (req.method === 'DELETE') {
+    await handleDELETE(req, res, reservationId);
   } else {
     throw new Error(
       `The HTTP ${req.method} method is not supported at this route.`
@@ -85,6 +87,25 @@ async function handlePUT(
       data: { cancellationMailSent: true },
     });
   }
+
+  return res.json(reservation);
+}
+
+async function handleDELETE(
+  req: NextApiRequest,
+  res: NextApiResponse,
+  id: string
+) {
+  const reservation = await prisma.reservation.delete({
+    where: { id },
+    include: {
+      event: {
+        select: {
+          date: true,
+        },
+      },
+    },
+  });
 
   return res.json(reservation);
 }

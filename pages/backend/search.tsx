@@ -46,7 +46,13 @@ export default function BackendSearchReservationPage({
     return reservations.sort((a, b) => {
       const aDate = new Date(a.event.date).getTime();
       const bDate = new Date(b.event.date).getTime();
-      return bDate - aDate; // Sort by createdAt descending
+
+      if (aDate !== bDate) {
+        return bDate - aDate;
+      }
+
+      // Falls Datum gleich: nach Name sortieren (aufsteigend, A-Z)
+      return a.name.localeCompare(b.name);
     });
   };
 
@@ -86,6 +92,30 @@ export default function BackendSearchReservationPage({
           'Fehler beim Aktualisieren der Reservierung. Bitte versuche es später erneut.'
         );
       });
+  };
+
+  const handleDeleteReservation = async (
+    deletingRes: ApiGetReservationsResponse[number]
+  ) => {
+    if (
+      !confirm(
+        `Bist du sicher, dass du die Reservierung von ${deletingRes.name} löschen möchtest?`
+      )
+    ) {
+      return;
+    }
+    try {
+      await axios.delete(`/api/reservations/${deletingRes.id}`);
+      setFilteredReservations((prev) =>
+        prev.filter((r) => r.id !== deletingRes.id)
+      );
+      setReservations((prev) => prev.filter((r) => r.id !== deletingRes.id));
+    } catch (error) {
+      console.error('Error deleting reservation:', error);
+      alert(
+        'Fehler beim Löschen der Reservierung. Bitte versuche es später erneut.'
+      );
+    }
   };
 
   useEffect(() => {
@@ -223,10 +253,10 @@ export default function BackendSearchReservationPage({
                           '&:last-child td, &:last-child th': { border: 0 },
                         }}
                       >
-                        <TableCell component="th" scope="row">
+                        <TableCell>
                           {fullEventName(reservation.event)}
                         </TableCell>
-                        <TableCell component="th" scope="row">
+                        <TableCell sx={{ whiteSpace: 'nowrap' }}>
                           {reservation.name}
                         </TableCell>
                         <TableCell>{reservation.email}</TableCell>
@@ -243,6 +273,12 @@ export default function BackendSearchReservationPage({
                             onClick={() => setSelectedReservation(reservation)}
                           >
                             Bearbeiten
+                          </button>
+                          <button
+                            className="text-red-500 hover:text-red-700 transition"
+                            onClick={() => handleDeleteReservation(reservation)}
+                          >
+                            Löschen
                           </button>
                         </TableCell>
                       </TableRow>
