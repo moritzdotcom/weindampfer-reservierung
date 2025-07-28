@@ -8,38 +8,16 @@ export default async function handle(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (req.method === 'GET') {
-    await handleGET(req, res);
-  } else if (req.method === 'POST') {
+  const session = await getServerSession(req);
+  if (!session) return res.status(401).json('Not authenticated');
+
+  if (req.method === 'POST') {
     await handlePOST(req, res);
   } else {
     throw new Error(
       `The HTTP ${req.method} method is not supported at this route.`
     );
   }
-}
-
-export type ApiGetReservationsResponse = Prisma.ReservationGetPayload<{
-  include: {
-    event: true;
-  };
-}>[];
-
-async function handleGET(req: NextApiRequest, res: NextApiResponse) {
-  const session = await getServerSession(req);
-  if (!session) return res.status(401).json('Not authenticated');
-
-  const reservations = await prisma.reservation.findMany({});
-  const events = await prisma.event.findMany();
-
-  const reservationsWithEvent = reservations.map((reservation) => {
-    const event = events.find((e) => e.id === reservation.eventId);
-    return {
-      ...reservation,
-      event,
-    };
-  });
-  return res.json(reservationsWithEvent);
 }
 
 export type ApiPostReservationResponse = Prisma.ReservationGetPayload<{
@@ -53,19 +31,8 @@ export type ApiPostReservationResponse = Prisma.ReservationGetPayload<{
 }>;
 
 async function handlePOST(req: NextApiRequest, res: NextApiResponse) {
-  const {
-    name,
-    email,
-    people,
-    ticketsNeeded,
-    occasion,
-    eventId,
-    phone,
-    streetAddress,
-    tableType,
-    city,
-    zipCode,
-  } = req.body;
+  const { name, email, people, ticketsNeeded, occasion, eventId, tableType } =
+    req.body;
 
   if (typeof name !== 'string') return res.status(400).json('Name is required');
   if (typeof email !== 'string')
@@ -78,13 +45,6 @@ async function handlePOST(req: NextApiRequest, res: NextApiResponse) {
     return res.status(400).json('Event ID is required');
   if (typeof occasion !== 'string')
     return res.status(400).json('Occasion is required');
-  if (typeof phone !== 'string')
-    return res.status(400).json('Phone number is required');
-  if (typeof streetAddress !== 'string')
-    return res.status(400).json('Street address is required');
-  if (typeof city !== 'string') return res.status(400).json('City is required');
-  if (typeof zipCode !== 'string')
-    return res.status(400).json('Zip code is required');
 
   const reservation = await prisma.reservation.create({
     data: {
@@ -93,11 +53,7 @@ async function handlePOST(req: NextApiRequest, res: NextApiResponse) {
       people,
       ticketsNeeded,
       occasion,
-      phone,
-      streetAddress,
       tableType,
-      city,
-      zipCode,
       event: { connect: { id: eventId } },
     },
     include: {

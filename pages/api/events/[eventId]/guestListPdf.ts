@@ -25,7 +25,7 @@ export default async function handle(
   }
 }
 
-type TableItem = { text: string; align: 'left' | 'right' };
+type TableItem = { text: string; align: 'left' | 'right'; color?: string };
 
 async function handleGET(
   req: NextApiRequest,
@@ -99,11 +99,16 @@ async function handleGET(
     .forEach((r, idx) => {
       const rowTop = tableTop + 28 + idx * 32;
       const values: TableItem[] = [
-        { text: r.name, align: 'left' },
+        // HIER ICON
+        { text: `${r.name} (${r.payed ? 'bezahlt' : 'offen'})`, align: 'left' },
         { text: r.people.toString(), align: 'right' },
         { text: r.tableNumber || '', align: 'right' },
         { text: '', align: 'left' },
-        { text: `${event.minimumSpend * r.people} €`, align: 'right' },
+        {
+          text: `${event.minimumSpend * r.people} €`,
+          align: 'right',
+          color: r.payed ? 'green' : 'red',
+        },
       ];
 
       // Horizontale Linie oben
@@ -115,11 +120,11 @@ async function handleGET(
 
       // Inhalte mit vertikalen Linien
       let xPos = 40;
-      values.forEach(({ text, align }, i) => {
+      values.forEach(({ text, align, color }, i) => {
         doc
           .font('Helvetica')
           .fontSize(12)
-          .fillColor('black')
+          .fillColor(color || 'black')
           .text(text, xPos + 6, rowTop + 7, {
             width: colWidths[i] - 8,
             align,

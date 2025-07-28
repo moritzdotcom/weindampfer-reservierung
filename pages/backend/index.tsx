@@ -6,6 +6,8 @@ import { Grid } from '@mui/material';
 import CelebrationRoundedIcon from '@mui/icons-material/CelebrationRounded';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
+import Diversity1Icon from '@mui/icons-material/Diversity1';
+import SearchIcon from '@mui/icons-material/Search';
 
 export default function Backend({ session }: { session: Session }) {
   const router = useRouter();
@@ -44,6 +46,16 @@ export default function Backend({ session }: { session: Session }) {
           href="/backend/requests"
           text="Reservierungsanfragen"
           Icon={QuestionAnswerIcon}
+        />
+        <LinkItem
+          href="/backend/search"
+          text="Suchen & bearbeiten"
+          Icon={SearchIcon}
+        />
+        <LinkItem
+          href="/backend/friendsAndFamily"
+          text="Friends & Family Reservierung"
+          Icon={Diversity1Icon}
         />
       </Grid>
     </div>

@@ -27,7 +27,7 @@ export default function BackendEventsPage({ session }: { session: Session }) {
   const fetchEvents = async () => {
     const res = await axios.get<ApiGetEventsResponse>('/api/events');
     const sorted = res.data.sort(
-      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
     );
     setLoading(false);
     setEvents(sorted);

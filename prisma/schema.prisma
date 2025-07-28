@@ -40,26 +40,27 @@ model Event {
 }
 
 model Reservation {
-  id                  String            @id @default(uuid())
-  name                String
-  email               String
-  phone               String            @default("")
-  streetAddress       String            @default("")
-  city                String            @default("")
-  zipCode             String            @default("")
-  people              Int
-  occasion            String            @default("")
-  ticketsNeeded       Boolean           @default(false)
-  tableType           String            @default("")
-  eventId             String
-  event               Event             @relation(fields: [eventId], references: [id])
-  confirmationState   ConfirmationState @default(REQUESTED)
-  tableNumber         String?
-  invoiceUrl          String?
-  payed               Boolean           @default(false)
-  notified            DateTime?
-  paymentReminderSent DateTime?
-  createdAt           DateTime          @default(now())
+  id                   String            @id @default(uuid())
+  name                 String
+  email                String
+  phone                String            @default("")
+  streetAddress        String            @default("")
+  city                 String            @default("")
+  zipCode              String            @default("")
+  people               Int
+  occasion             String            @default("")
+  ticketsNeeded        Boolean           @default(false)
+  tableType            String            @default("")
+  eventId              String
+  event                Event             @relation(fields: [eventId], references: [id])
+  confirmationState    ConfirmationState @default(REQUESTED)
+  tableNumber          String?
+  invoiceUrl           String?
+  payed                Boolean           @default(false)
+  notified             DateTime?
+  cancellationMailSent Boolean           @default(false)
+  paymentReminderSent  DateTime?
+  createdAt            DateTime          @default(now())
 }
 
 enum ConfirmationState {

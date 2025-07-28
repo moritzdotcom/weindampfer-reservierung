@@ -16,7 +16,7 @@ export default function ReservationForm({ events }: { events: Event[] }) {
   const [selectedEventId, setSelectedEventId] = useState<string | null>(
     events.length > 0
       ? events.sort(
-          (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+          (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
         )[0].id
       : null
   );
@@ -195,7 +195,19 @@ export default function ReservationForm({ events }: { events: Event[] }) {
 
   useEffect(() => {
     if (formDirty) validateInputs();
-  }, [name, email, personCount, ticketsNeeded]);
+  }, [
+    name,
+    email,
+    personCount,
+    tableType,
+    ticketsNeeded,
+    occasion,
+    phone,
+    streetAddress,
+    city,
+    zipCode,
+    argbChecked,
+  ]);
 
   return (
     <>

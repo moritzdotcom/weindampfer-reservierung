@@ -31,10 +31,38 @@ async function handlePUT(
   res: NextApiResponse,
   id: string
 ) {
-  const { confirmationState, tableNumber, payed } = req.body;
+  const {
+    confirmationState,
+    tableNumber,
+    payed,
+    name,
+    email,
+    phone,
+    streetAddress,
+    city,
+    zipCode,
+    people,
+    occasion,
+    ticketsNeeded,
+    tableType,
+  } = req.body;
 
   const reservation = await prisma.reservation.update({
-    data: { confirmationState, tableNumber, payed },
+    data: {
+      confirmationState,
+      tableNumber,
+      payed,
+      name,
+      email,
+      phone,
+      streetAddress,
+      city,
+      zipCode,
+      people,
+      occasion,
+      ticketsNeeded,
+      tableType,
+    },
     where: { id },
     include: {
       event: {
@@ -45,13 +73,17 @@ async function handlePUT(
     },
   });
 
-  if (confirmationState === 'CANCELLED') {
+  if (confirmationState === 'CANCELLED' && !reservation.cancellationMailSent) {
     await sendReservationDeclinedMail(
       reservation.email,
       reservation.name,
       reservation.people.toString(),
       reservation.event.date.toLocaleDateString('de-DE')
     );
+    await prisma.reservation.update({
+      where: { id },
+      data: { cancellationMailSent: true },
+    });
   }
 
   return res.json(reservation);
