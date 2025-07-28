@@ -95,7 +95,12 @@ async function handleGET(
 
   // Vertikale Linien + Inhalte
   event.reservations
-    .sort((a, b) => (a.tableNumber || '').localeCompare(b.tableNumber || ''))
+    .sort((a, b) =>
+      (a.tableNumber || '').localeCompare(b.tableNumber || '', undefined, {
+        numeric: true,
+        sensitivity: 'base',
+      })
+    )
     .forEach((r, idx) => {
       const rowTop = tableTop + 28 + idx * 32;
       const values: TableItem[] = [
