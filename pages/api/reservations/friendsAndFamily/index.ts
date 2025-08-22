@@ -54,6 +54,7 @@ async function handlePOST(req: NextApiRequest, res: NextApiResponse) {
       ticketsNeeded,
       occasion,
       tableType,
+      confirmationState: 'CONFIRMED',
       event: { connect: { id: eventId } },
     },
     include: {
