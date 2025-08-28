@@ -28,6 +28,7 @@ export default function BackendReservationsPage({
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
   const [reservations, setReservations] =
     useState<ApiGetReservationsResponse>();
+  const [loading, setLoading] = useState(false);
 
   const selectedEvent = useMemo(
     () => events.filter((e) => e.id == selectedEventId)[0],
@@ -77,9 +78,13 @@ export default function BackendReservationsPage({
 
   useEffect(() => {
     if (selectedEventId) {
-      axios.get(`/api/events/${selectedEventId}/reservations`).then((res) => {
-        setReservations(res.data);
-      });
+      setLoading(true);
+      axios
+        .get(`/api/events/${selectedEventId}/reservations`)
+        .then((res) => {
+          setReservations(res.data);
+        })
+        .finally(() => setLoading(false));
     }
   }, [selectedEventId]);
 
@@ -124,7 +129,12 @@ export default function BackendReservationsPage({
         </TextField>
       </div>
 
-      <Fade in={Boolean(selectedEvent)} timeout={300}>
+      {loading && (
+        <Box className="flex justify-center items-center">
+          <CircularProgress />
+        </Box>
+      )}
+      <Fade in={!loading} timeout={300}>
         <div>
           {!filteredReservations ? (
             <Box className="flex justify-center items-center">

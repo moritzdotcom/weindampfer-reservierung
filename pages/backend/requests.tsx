@@ -29,6 +29,7 @@ export default function BackendRequestsPage({ session }: { session: Session }) {
   const [reservations, setReservations] =
     useState<ApiGetReservationsResponse>();
   const [sortOption, setSortOption] = useState<string>('Neuste zuerst');
+  const [loading, setLoading] = useState(false);
 
   function sortReservations(
     reservations: typeof filteredReservations,
@@ -114,9 +115,15 @@ export default function BackendRequestsPage({ session }: { session: Session }) {
 
   useEffect(() => {
     if (selectedEventId) {
-      axios.get(`/api/events/${selectedEventId}/reservations`).then((res) => {
-        setReservations(res.data);
-      });
+      setLoading(true);
+      axios
+        .get(`/api/events/${selectedEventId}/reservations`)
+        .then((res) => {
+          setReservations(res.data);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     }
   }, [selectedEventId]);
 
@@ -160,7 +167,12 @@ export default function BackendRequestsPage({ session }: { session: Session }) {
         </TextField>
       </div>
 
-      <Fade in={Boolean(selectedEvent)} timeout={300}>
+      {loading && (
+        <Box className="flex justify-center items-center">
+          <CircularProgress />
+        </Box>
+      )}
+      <Fade in={!loading} timeout={300}>
         <div>
           <div className="flex justify-between text-sky-600">
             <p className="text-lg font-medium text-gray-200">
