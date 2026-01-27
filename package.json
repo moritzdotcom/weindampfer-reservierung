@@ -19,7 +19,7 @@
     "crypto-js": "^4.2.0",
     "formidable": "^3.5.4",
     "framer-motion": "^12.10.2",
-    "next": "15.3.1",
+    "next": "15.3.8",
     "nodemailer": "^7.0.3",
     "pdfkit": "^0.17.1",
     "react": "^19.0.0",
