@@ -104,6 +104,7 @@ async function handlePOST(req: NextApiRequest, res: NextApiResponse) {
       event: {
         select: {
           date: true,
+          eventType: true,
         },
       },
     },
@@ -114,6 +115,7 @@ async function handlePOST(req: NextApiRequest, res: NextApiResponse) {
     name,
     people,
     reservation.event.date.toLocaleDateString('de-DE'),
+    reservation.event.eventType,
   );
 
   return res.json(reservation);

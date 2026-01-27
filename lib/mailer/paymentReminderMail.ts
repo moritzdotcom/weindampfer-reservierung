@@ -1,11 +1,13 @@
-import { sendMail } from '@/lib/mailer';
+import { EventType } from '@/generated/prisma';
+import { renderGreeting, renderImage, sendMail } from '@/lib/mailer';
 
 export default function sendPaymentReminderMail(
   email: string,
   name: string,
   people: number,
   date: string,
-  price: number
+  price: number,
+  eventType: EventType,
 ) {
   return sendMail({
     to: email,
@@ -26,9 +28,7 @@ export default function sendPaymentReminderMail(
           <!-- Logo -->
           <tr>
             <td style="padding:20px; text-align:center;">
-              <img src="${
-                process.env.PUBLIC_URL
-              }logo-black.png" alt="Weindampfer Logo" style="max-width:200px; height:auto;" />
+              ${renderImage(eventType)}
             </td>
           </tr>
           <!-- Überschrift -->
@@ -81,7 +81,7 @@ export default function sendPaymentReminderMail(
             <td style="padding:0 20px 20px; color:#333333; font-size:14px; line-height:1.5;">
               Wir freuen uns darauf, dich bald auf dem Weindampfer zu begrüßen!<br/><br/>
               Liebe Grüße<br/>
-              Dein Weindampfer-Team
+              ${renderGreeting(eventType)}
             </td>
           </tr>
           <!-- Footer -->

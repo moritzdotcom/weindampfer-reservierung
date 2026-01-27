@@ -1,4 +1,5 @@
-import { sendMail } from '@/lib/mailer';
+import { EventType } from '@/generated/prisma/wasm';
+import { renderGreeting, renderImage, sendMail } from '@/lib/mailer';
 
 export default function sendReservationMail(
   email: string,
@@ -6,11 +7,12 @@ export default function sendReservationMail(
   people: string,
   date: string,
   price: number,
+  eventType: EventType,
   attachments?: {
     filename: string;
     content: Buffer | string;
     contentType?: string;
-  }[]
+  }[],
 ) {
   return sendMail({
     to: email,
@@ -31,9 +33,7 @@ export default function sendReservationMail(
           <!-- Logo -->
           <tr>
             <td style="padding:20px; text-align:center;">
-              <img src="${
-                process.env.PUBLIC_URL
-              }logo-black.png" alt="Weindampfer Logo" style="max-width:200px; height:auto;" />
+              ${renderImage(eventType)}
             </td>
           </tr>
           <!-- Überschrift -->
@@ -76,7 +76,7 @@ export default function sendReservationMail(
             <td style="padding:0 20px 20px; color:#333333; font-size:14px; line-height:1.5;">
               Wir freuen uns auf deinen Besuch!<br/><br/>
               Liebe Grüße<br/>
-              Dein Weindampfer-Team
+              ${renderGreeting(eventType)}
             </td>
           </tr>
           <!-- Footer -->

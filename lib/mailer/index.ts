@@ -1,3 +1,4 @@
+import { EventType } from '@/generated/prisma';
 import nodemailer from 'nodemailer';
 
 const transporter = nodemailer.createTransport({
@@ -38,4 +39,24 @@ export function sendMail({
     html,
     attachments,
   });
+}
+
+export function renderImage(eventType: EventType) {
+  if (eventType === 'WEINDAMPFER') {
+    return `<img src="${
+      process.env.PUBLIC_URL
+    }logo-black.png" alt="Weindampfer Logo" style="max-width:200px; height:auto;" />`;
+  } else if (eventType === 'JECKERIA') {
+    return `<img src="${
+      process.env.PUBLIC_URL
+    }jeckeria.jpg" alt="Jeckeria Logo" style="max-width:300px; height:auto;" />`;
+  }
+}
+
+export function renderGreeting(eventType: EventType) {
+  if (eventType === 'WEINDAMPFER') {
+    return `Dein Weindampfer-Team`;
+  } else if (eventType === 'JECKERIA') {
+    return `Dein Jeckeria-Team`;
+  }
 }
