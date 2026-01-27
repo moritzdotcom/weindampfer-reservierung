@@ -1,223 +1,45 @@
 import { Event } from '@/generated/prisma';
 import { fullEventName } from '@/lib/event';
 import {
+  CssBaseline,
   Dialog,
   DialogContent,
-  Divider,
   MenuItem,
   TextField,
+  ThemeProvider,
+  Typography,
 } from '@mui/material';
-import axios from 'axios';
-import { useEffect, useState } from 'react';
-import ARGBConfirmation from './argbConfirmation';
-import ReservationCostSummary from './reservationCostSummary';
+import { useMemo, useState } from 'react';
+import ReservationFormWeindampfer from './reservationFormWeindampfer';
+import ReservationFormJeckeria from './reservationFormJeckeria';
+import { jeckeriaTheme, weindampferTheme } from '@/theme';
 
 export default function ReservationForm({ events }: { events: Event[] }) {
   const [selectedEventId, setSelectedEventId] = useState<string | null>(
     events.length > 0
       ? events.sort(
-          (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+          (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
         )[0].id
-      : null
+      : null,
   );
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [personCount, setPersonCount] = useState('');
-  const [tableType, setTableType] = useState('Stehtisch');
-  const [ticketsNeeded, setTicketsNeeded] = useState('yes');
-  const [occasion, setOccasion] = useState('');
-  const [phone, setPhone] = useState('');
-  const [streetAddress, setStreetAddress] = useState('');
-  const [city, setCity] = useState('');
-  const [zipCode, setZipCode] = useState('');
-  const [argbChecked, setArgbChecked] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-  const [errorObj, setErrorObj] = useState({
-    name: '',
-    email: '',
-    personCount: '',
-    ticketsNeeded: '',
-    submit: '',
-    occasion: '',
-    phone: '',
-    streetAddress: '',
-    city: '',
-    zipCode: '',
-  });
-
-  const [formDirty, setFormDirty] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-
-  const validateEmail = (email: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
-
-  const resetErrorObj = () => {
-    setErrorObj({
-      name: '',
-      email: '',
-      personCount: '',
-      ticketsNeeded: '',
-      submit: '',
-      occasion: '',
-      phone: '',
-      streetAddress: '',
-      city: '',
-      zipCode: '',
-    });
-  };
-
-  const validateInputs = () => {
-    let errorOccured = false;
-    resetErrorObj();
-
-    if (email) {
-      if (!validateEmail(email)) {
-        errorOccured = true;
-        setErrorObj((prev) => ({ ...prev, email: 'Ungültige E-Mail-Adresse' }));
-      }
-    } else {
-      errorOccured = true;
-      setErrorObj((prev) => ({
-        ...prev,
-        email: 'E-Mail darf nicht leer sein',
-      }));
-    }
-    if (Number(personCount) < 6 || Number(personCount) > 25) {
-      errorOccured = true;
-      setErrorObj((prev) => ({
-        ...prev,
-        personCount: 'Anzahl muss zwischen 6 und 25 liegen',
-      }));
-    }
-    if (!name) {
-      errorOccured = true;
-      setErrorObj((prev) => ({ ...prev, name: 'Name darf nicht leer sein' }));
-    }
-    if (!ticketsNeeded) {
-      errorOccured = true;
-      setErrorObj((prev) => ({
-        ...prev,
-        ticketsNeeded: 'Bitte wähle eine Option',
-      }));
-    }
-    if (!occasion) {
-      errorOccured = true;
-      setErrorObj((prev) => ({
-        ...prev,
-        occasion: 'Anlass darf nicht leer sein',
-      }));
-    }
-    if (!argbChecked) {
-      errorOccured = true;
-      setErrorObj((prev) => ({
-        ...prev,
-        submit: 'Bitte bestätige die ARGB-Bedingungen',
-      }));
-    }
-    if (!phone) {
-      errorOccured = true;
-      setErrorObj((prev) => ({
-        ...prev,
-        phone: 'Telefonnummer darf nicht leer sein',
-      }));
-    }
-    if (!streetAddress) {
-      errorOccured = true;
-      setErrorObj((prev) => ({
-        ...prev,
-        streetAddress: 'Straße und Hausnummer dürfen nicht leer sein',
-      }));
-    }
-    if (!city) {
-      errorOccured = true;
-      setErrorObj((prev) => ({
-        ...prev,
-        city: 'Stadt darf nicht leer sein',
-      }));
-    }
-    if (!zipCode) {
-      errorOccured = true;
-      setErrorObj((prev) => ({
-        ...prev,
-        zipCode: 'Postleitzahl darf nicht leer sein',
-      }));
-    }
-    return !errorOccured;
-  };
-
-  const onSubmit = async () => {
-    setFormDirty(true);
-    if (!validateInputs()) return;
-    setLoading(true);
-    try {
-      await axios.post('/api/reservations', {
-        eventId: selectedEventId,
-        name,
-        email,
-        people: Number(personCount),
-        tableType,
-        ticketsNeeded: ticketsNeeded === 'yes',
-        occasion,
-        phone,
-        streetAddress,
-        city,
-        zipCode,
-      });
-      // Reset form after successful submission
-      resetErrorObj();
-      setName('');
-      setEmail('');
-      setPersonCount('');
-      setTableType('Stehtisch');
-      setTicketsNeeded('yes');
-      setOccasion('');
-      setPhone('');
-      setStreetAddress('');
-      setCity('');
-      setZipCode('');
-      setFormDirty(false);
-      setShowSuccess(true);
-      setArgbChecked(false);
-    } catch (error) {
-      setErrorObj((prev) => ({
-        ...prev,
-        submit:
-          'Fehler beim Senden der Reservierung. Bitte versuche es später erneut.',
-      }));
-    }
-    setLoading(false);
-  };
 
   const selectedEvent = events.find((event) => event.id === selectedEventId);
 
-  useEffect(() => {
-    if (formDirty) validateInputs();
-  }, [
-    name,
-    email,
-    personCount,
-    tableType,
-    ticketsNeeded,
-    occasion,
-    phone,
-    streetAddress,
-    city,
-    zipCode,
-    argbChecked,
-  ]);
+  const pageTheme = useMemo(
+    () =>
+      selectedEvent?.eventType === 'JECKERIA'
+        ? jeckeriaTheme
+        : weindampferTheme,
+    [selectedEvent],
+  );
 
   return (
-    <>
+    <ThemeProvider theme={pageTheme}>
+      <CssBaseline />
       <div className="max-w-3xl mx-auto p-6">
         <div>
-          <img
-            src="/logo-white.png"
-            alt="Weindampfer Logo"
-            className="mx-auto h-20 my-12"
-          />
+          <RenderEventTypeImage event={selectedEvent} />
           <h4 className="text-2xl sm:text-3xl font-extralight font-cocogoose text-center">
             Tischreservierung
           </h4>
@@ -238,42 +60,7 @@ export default function ReservationForm({ events }: { events: Event[] }) {
           <div></div>
         ) : (
           <div>
-            <div className="text-neutral-400 leading-relaxed text-base sm:text-lg mt-8">
-              <p className="text-white text-xl font-semibold block mb-2">
-                Willkommen an Bord, liebe Weindampfer-Gäste!
-              </p>
-              Hier könnt ihr ganz einfach euren Tisch für unsere Events
-              reservieren - perfekt für Gruppen, die stilvoll feiern wollen.
-              <br />
-              <br />
-              <p className="text-white font-medium">
-                Eure Vorteile auf einen Blick:
-              </p>
-              <ul className="list-disc list-outside ml-4 mt-2 mb-4">
-                <li>Eigener Tisch & reservierter Bereich</li>
-                <li>Persönlicher Tischkellner</li>
-                <li>Schnellerer Einlass über den VIP-Check-In</li>
-                <li>Garantierte Tickets für die gesamte Gruppe</li>
-              </ul>
-              <p className="text-white font-medium">
-                So läuft die Reservierung ab:
-              </p>
-              <ul className="list-disc list-outside ml-4 mt-2 mb-4">
-                <li>Formular ausfüllen & absenden</li>
-                <li>Wir prüfen eure Anfrage und bestätigen sie per Mail</li>
-                <li>
-                  Ihr erhaltet eine Rechnung - Zahlung innerhalb von 7 Tagen
-                </li>
-                <li>
-                  Nach Geldeingang erhaltet ihr eure finalen Unterlagen /
-                  Tickets
-                </li>
-                <li>Am Eventtag: Kommt vorbei & genießt die Fahrt!</li>
-              </ul>
-              Wir freuen uns auf euch!
-              <br />
-              <p className="mt-4 block">Euer Weindampfer-Team</p>
-            </div>
+            <RenderEventTypeText event={selectedEvent} />
 
             {events.length > 1 && (
               <div className="my-12">
@@ -294,174 +81,15 @@ export default function ReservationForm({ events }: { events: Event[] }) {
                 </TextField>
               </div>
             )}
-            <div>
-              <div className="flex flex-col gap-7">
-                <Divider
-                  sx={{
-                    ':before': { borderColor: 'var(--color-neutral-500)' },
-                    ':after': { borderColor: 'var(--color-neutral-500)' },
-                    fontSize: '1.2rem',
-                  }}
-                >
-                  Persönliche Daten
-                </Divider>
-                <TextField
-                  fullWidth
-                  label="Name"
-                  autoComplete="name"
-                  required
-                  error={Boolean(errorObj.name)}
-                  helperText={errorObj.name}
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                />
-                <TextField
-                  fullWidth
-                  label="E-Mail"
-                  autoComplete="email"
-                  required
-                  value={email}
-                  error={Boolean(errorObj.email)}
-                  helperText={errorObj.email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-                <TextField
-                  fullWidth
-                  label="Telefonnummer"
-                  autoComplete="tel"
-                  required
-                  value={phone}
-                  error={Boolean(errorObj.phone)}
-                  helperText={errorObj.phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                />
-                <TextField
-                  fullWidth
-                  label="Straße und Hausnummer"
-                  autoComplete="street-address"
-                  required
-                  value={streetAddress}
-                  error={Boolean(errorObj.streetAddress)}
-                  helperText={errorObj.streetAddress}
-                  onChange={(e) => setStreetAddress(e.target.value)}
-                />
-                <div className="flex gap-4 mb-8">
-                  <TextField
-                    fullWidth
-                    label="Postleitzahl"
-                    autoComplete="postal-code"
-                    required
-                    value={zipCode}
-                    error={Boolean(errorObj.zipCode)}
-                    helperText={errorObj.zipCode}
-                    onChange={(e) => setZipCode(e.target.value)}
-                  />
-                  <TextField
-                    fullWidth
-                    label="Stadt"
-                    autoComplete="address-level2"
-                    required
-                    value={city}
-                    error={Boolean(errorObj.city)}
-                    helperText={errorObj.city}
-                    onChange={(e) => setCity(e.target.value)}
-                  />
-                </div>
-                <Divider
-                  sx={{
-                    ':before': { borderColor: 'var(--color-neutral-500)' },
-                    ':after': { borderColor: 'var(--color-neutral-500)' },
-                    fontSize: '1.2rem',
-                  }}
-                >
-                  Angaben zur Reservierung
-                </Divider>
-                <TextField
-                  label="Anzahl Personen"
-                  type="number"
-                  required
-                  error={Boolean(errorObj.personCount)}
-                  helperText={errorObj.personCount}
-                  slotProps={{ htmlInput: { min: 6, max: 25 } }}
-                  value={personCount}
-                  onChange={(e) => setPersonCount(e.target.value)}
-                  fullWidth
-                />
-                <TextField
-                  select
-                  label="Tischart wählen"
-                  fullWidth
-                  value={tableType}
-                  onChange={(e) => {
-                    setTableType(e.target.value);
-                  }}
-                >
-                  <MenuItem value="Stehtisch">
-                    Stehtisch auf der Tanzfläche
-                  </MenuItem>
-                  <MenuItem value="Empore">Tisch auf der Empore</MenuItem>
-                </TextField>
-                <TextField
-                  select
-                  label="Benötigst du Tickets?"
-                  value={ticketsNeeded}
-                  onChange={(e) => setTicketsNeeded(e.target.value)}
-                  fullWidth
-                  error={Boolean(errorObj.ticketsNeeded)}
-                  helperText={errorObj.ticketsNeeded}
-                >
-                  <MenuItem value="yes">Ja</MenuItem>
-                  <MenuItem value="no">Nein (Habe schon welche)</MenuItem>
-                </TextField>
-                <TextField
-                  fullWidth
-                  label="Anlass"
-                  value={occasion}
-                  required
-                  error={Boolean(errorObj.occasion)}
-                  helperText={errorObj.occasion}
-                  onChange={(e) => setOccasion(e.target.value)}
-                  placeholder="z.B. Geburtstag, Jubiläum, etc."
-                />
-                <ReservationCostSummary
-                  personCount={Number(personCount)}
-                  ticketsNeeded={ticketsNeeded === 'yes'}
-                  minimumSpend={selectedEvent?.minimumSpend || 0}
-                  ticketPrice={selectedEvent?.ticketPrice || 0}
-                />
-                <ARGBConfirmation onChecked={setArgbChecked} />
-                <div>
-                  {errorObj.submit && (
-                    <div className="text-red-500 text-sm mb-2 text-center">
-                      {errorObj.submit}
-                    </div>
-                  )}
-                  <button
-                    onClick={onSubmit}
-                    className="w-full bg-white hover:bg-gray-100 text-black font-semibold py-3 rounded-lg transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                    disabled={
-                      !name ||
-                      !email ||
-                      !personCount ||
-                      !argbChecked ||
-                      !occasion ||
-                      !phone ||
-                      !streetAddress ||
-                      !city ||
-                      !zipCode ||
-                      loading
-                    }
-                  >
-                    {loading ? 'Sende Anfrage...' : 'Reservierung anfragen'}
-                  </button>
-                </div>
-              </div>
-            </div>
+            <RenderEventTypeForm
+              event={selectedEvent}
+              onSuccess={() => setShowSuccess(true)}
+            />
           </div>
         )}
       </div>
       <SuccessDialog open={showSuccess} onClose={() => setShowSuccess(false)} />
-    </>
+    </ThemeProvider>
   );
 }
 
@@ -496,4 +124,137 @@ function SuccessDialog({
       </div>
     </Dialog>
   );
+}
+
+function RenderEventTypeForm({
+  event,
+  onSuccess,
+}: {
+  event: Event | undefined;
+  onSuccess: () => void;
+}) {
+  if (!event) return null;
+
+  switch (event.eventType) {
+    case 'WEINDAMPFER':
+      return <ReservationFormWeindampfer event={event} onSuccess={onSuccess} />;
+    case 'JECKERIA':
+      return <ReservationFormJeckeria event={event} onSuccess={onSuccess} />;
+    default:
+      return null;
+  }
+}
+
+function RenderEventTypeImage({ event }: { event: Event | undefined }) {
+  if (!event)
+    return (
+      <img
+        src="/logo-white.png"
+        className="mx-auto h-20 my-12"
+        alt="Weindampfer"
+      />
+    );
+
+  switch (event.eventType) {
+    case 'WEINDAMPFER':
+      return (
+        <img
+          src="/logo-white.png"
+          className="mx-auto h-20 my-12"
+          alt="Weindampfer"
+        />
+      );
+    case 'JECKERIA':
+      return (
+        <img src="/jeckeria.jpg" className="mx-auto my-12" alt="Jeckeria" />
+      );
+    default:
+      return (
+        <img
+          src="/logo-white.png"
+          className="mx-auto h-20 my-12"
+          alt="Weindampfer"
+        />
+      );
+  }
+}
+
+function RenderEventTypeText({ event }: { event: Event | undefined }) {
+  if (!event) return null;
+
+  switch (event.eventType) {
+    case 'WEINDAMPFER':
+      return (
+        <div className="text-neutral-400 leading-relaxed text-base sm:text-lg mt-8">
+          <p className="text-white text-xl font-semibold block mb-2">
+            Willkommen an Bord, liebe Weindampfer-Gäste!
+          </p>
+          Hier könnt ihr ganz einfach euren Tisch für unsere Events reservieren
+          - perfekt für Gruppen, die stilvoll feiern wollen.
+          <br />
+          <br />
+          <p className="text-white font-medium">
+            Eure Vorteile auf einen Blick:
+          </p>
+          <ul className="list-disc list-outside ml-4 mt-2 mb-4">
+            <li>Eigener Tisch & reservierter Bereich</li>
+            <li>Persönlicher Tischkellner</li>
+            <li>Schnellerer Einlass über den VIP-Check-In</li>
+            <li>Garantierte Tickets für die gesamte Gruppe</li>
+          </ul>
+          <p className="text-white font-medium">
+            So läuft die Reservierung ab:
+          </p>
+          <ul className="list-disc list-outside ml-4 mt-2 mb-4">
+            <li>Formular ausfüllen & absenden</li>
+            <li>Wir prüfen eure Anfrage und bestätigen sie per Mail</li>
+            <li>Ihr erhaltet eine Rechnung - Zahlung innerhalb von 7 Tagen</li>
+            <li>
+              Nach Geldeingang erhaltet ihr eure finalen Unterlagen / Tickets
+            </li>
+            <li>Am Eventtag: Kommt vorbei & genießt die Fahrt!</li>
+          </ul>
+          Wir freuen uns auf euch!
+          <br />
+          <p className="mt-4 block">Euer Weindampfer-Team</p>
+        </div>
+      );
+    case 'JECKERIA':
+      return (
+        <div className="text-neutral-400 leading-relaxed text-base sm:text-lg mt-8">
+          <Typography fontWeight={500} fontSize={20} color="primary">
+            Helau, ihr Jecken!
+          </Typography>
+          Hier könnt ihr ganz einfach euren Tisch für die Jeckeria reservieren -
+          perfekt für Gruppen, die stilvoll feiern wollen.
+          <br />
+          <br />
+          <Typography fontWeight={500} fontSize={18} color="primary">
+            Eure Vorteile auf einen Blick:
+          </Typography>
+          <ul className="list-disc list-outside ml-4 mt-2 mb-4">
+            <li>Eigener Tisch & reservierter Bereich</li>
+            <li>Persönlicher Tischkellner</li>
+            <li>Schnellerer Einlass über den VIP-Check-In</li>
+            <li>Garantierte Tickets für die gesamte Gruppe</li>
+          </ul>
+          <Typography fontWeight={500} fontSize={18} color="primary">
+            So läuft die Reservierung ab:
+          </Typography>
+          <ul className="list-disc list-outside ml-4 mt-2 mb-4">
+            <li>Formular ausfüllen & absenden</li>
+            <li>Wir prüfen eure Anfrage und bestätigen sie per Mail</li>
+            <li>Ihr erhaltet eine Rechnung - Zahlung innerhalb von 7 Tagen</li>
+            <li>
+              Nach Geldeingang erhaltet ihr eure finalen Unterlagen / Tickets
+            </li>
+          </ul>
+          Wir freuen uns auf euch!
+          <br />
+          <p className="mt-4 block">Euer Jeckeria-Team</p>
+        </div>
+      );
+    default:
+      return null;
+  }
 }

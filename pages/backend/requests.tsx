@@ -33,7 +33,7 @@ export default function BackendRequestsPage({ session }: { session: Session }) {
 
   function sortReservations(
     reservations: typeof filteredReservations,
-    sortBy: string
+    sortBy: string,
   ) {
     if (!reservations) return [];
     return [...reservations].sort((a, b) => {
@@ -58,12 +58,12 @@ export default function BackendRequestsPage({ session }: { session: Session }) {
 
   const selectedEvent = useMemo(
     () => events.filter((e) => e.id == selectedEventId)[0],
-    [selectedEventId, events]
+    [selectedEventId, events],
   );
 
   const filteredReservations = useMemo(() => {
     return reservations?.filter(
-      (r) => r.confirmationState == selectedConfirmationState
+      (r) => r.confirmationState == selectedConfirmationState,
     );
   }, [reservations, selectedConfirmationState]);
 
@@ -75,14 +75,14 @@ export default function BackendRequestsPage({ session }: { session: Session }) {
 
   const updateState = async (
     reservationId: string,
-    state: ConfirmationState
+    state: ConfirmationState,
   ) => {
     setReservations((res) =>
       res
         ? res.map((r) =>
-            r.id == reservationId ? { ...r, confirmationState: state } : r
+            r.id == reservationId ? { ...r, confirmationState: state } : r,
           )
-        : undefined
+        : undefined,
     );
   };
 
@@ -106,8 +106,8 @@ export default function BackendRequestsPage({ session }: { session: Session }) {
         } else {
           setSelectedEventId(
             data.sort(
-              (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-            )[0].id
+              (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+            )[0].id,
           );
         }
       });
@@ -237,7 +237,7 @@ export default function BackendRequestsPage({ session }: { session: Session }) {
                       },
                     }}
                   />
-                )
+                ),
               )}
             </motion.div>
           )}
@@ -285,8 +285,8 @@ function ReservationCard({
         animating === 'left'
           ? { x: '-100%', opacity: 0, height: 0 }
           : animating === 'right'
-          ? { x: '100%', opacity: 0, height: 0 }
-          : { x: 0, opacity: 1, height: 'full' }
+            ? { x: '100%', opacity: 0, height: 0 }
+            : { x: 0, opacity: 1, height: 'full' }
       }
       transition={{ duration: 0.3 }}
       onAnimationComplete={handleAnimationComplete}
@@ -305,8 +305,13 @@ function ReservationCard({
           <p className="my-1 text-neutral-200">
             {reservation.email} / {reservation.phone}
           </p>
-          <p className="my-1 text-neutral-200">{reservation.tableType}</p>
-          <p className="my-1 text-neutral-300">{reservation.occasion}</p>
+          <p className="my-1 text-neutral-200">
+            {reservation.tableType}
+            {reservation.drinkPackage ? ` • ${reservation.drinkPackage}` : ''}
+          </p>
+          {reservation.occasion && (
+            <p className="my-1 text-neutral-300">{reservation.occasion}</p>
+          )}
           <div className="flex items-center gap-2 my-1">
             <p className="my-1 text-neutral-400">
               Tickets

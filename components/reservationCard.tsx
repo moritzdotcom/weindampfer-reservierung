@@ -104,7 +104,7 @@ export default function ReservationCard({
           headers: {
             'Content-Type': 'multipart/form-data',
           },
-        }
+        },
       );
       onUpdate({
         ...reservation,
@@ -120,7 +120,7 @@ export default function ReservationCard({
   async function fetchInvoiceUrl(invoicePath: string) {
     console.log(reservation);
     const res = await fetch(
-      `/api/reservations/invoiceUrl?path=${encodeURIComponent(invoicePath)}`
+      `/api/reservations/invoiceUrl?path=${encodeURIComponent(invoicePath)}`,
     );
     const json = await res.json();
 
@@ -157,6 +157,7 @@ export default function ReservationCard({
       </Box>
       <Typography className="text-gray-400 hover:text-gray-200 transition">
         {reservation.tableType}
+        {reservation.drinkPackage ? ` • ${reservation.drinkPackage}` : ''}
       </Typography>
       <Typography className="text-sm text-gray-400 hover:text-gray-200 transition">
         {reservation.email} / {reservation.phone}
@@ -218,11 +219,11 @@ export default function ReservationCard({
         {reservation.notified ? (
           <Tooltip
             title={`Benachrichtigt am: ${new Date(
-              reservation.notified
+              reservation.notified,
             ).toLocaleDateString('de')} ${
               reservation.paymentReminderSent
                 ? ` - Erinnert am: ${new Date(
-                    reservation.paymentReminderSent
+                    reservation.paymentReminderSent,
                   ).toLocaleDateString('de')}`
                 : ''
             }`}

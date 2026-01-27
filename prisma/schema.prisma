@@ -30,13 +30,15 @@ model Session {
 }
 
 model Event {
-  id           String        @id @default(uuid())
-  name         String
-  date         DateTime
-  minimumSpend Int           @default(50)
-  ticketPrice  Int           @default(30)
-  createdAt    DateTime      @default(now())
-  reservations Reservation[]
+  id               String           @id @default(uuid())
+  name             String
+  date             DateTime
+  minimumSpend     Int              @default(50)
+  ticketPrice      Int              @default(30)
+  minimumSpendMode MinimumSpendMode @default(PerCapita)
+  eventType        EventType        @default(WEINDAMPFER)
+  createdAt        DateTime         @default(now())
+  reservations     Reservation[]
 }
 
 model Reservation {
@@ -51,6 +53,7 @@ model Reservation {
   occasion             String            @default("")
   ticketsNeeded        Boolean           @default(false)
   tableType            String            @default("")
+  drinkPackage         String            @default("")
   eventId              String
   event                Event             @relation(fields: [eventId], references: [id])
   confirmationState    ConfirmationState @default(REQUESTED)
@@ -67,4 +70,14 @@ enum ConfirmationState {
   REQUESTED
   CONFIRMED
   CANCELLED
+}
+
+enum MinimumSpendMode {
+  PerCapita
+  PerTable
+}
+
+enum EventType {
+  WEINDAMPFER
+  JECKERIA
 }

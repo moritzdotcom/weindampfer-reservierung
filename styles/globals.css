@@ -5,10 +5,6 @@
   --font-cocogoose: "Cocogoose", "sans-serif";
 }
 
-body {
-  @apply bg-black text-white;
-}
-
 button {
   @apply cursor-pointer! disabled:cursor-not-allowed;
 }

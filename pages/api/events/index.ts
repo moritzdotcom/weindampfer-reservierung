@@ -5,7 +5,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handle(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   const session = await getServerSession(req);
   if (!session) return res.status(401).json('Not authenticated');
@@ -16,7 +16,7 @@ export default async function handle(
     await handlePOST(req, res);
   } else {
     throw new Error(
-      `The HTTP ${req.method} method is not supported at this route.`
+      `The HTTP ${req.method} method is not supported at this route.`,
     );
   }
 }
@@ -34,7 +34,8 @@ async function handleGET(req: NextApiRequest, res: NextApiResponse) {
 export type ApiPostEventResponse = Prisma.EventGetPayload<{}>;
 
 async function handlePOST(req: NextApiRequest, res: NextApiResponse) {
-  const { name, date, minimumSpend, ticketPrice } = req.body;
+  const { name, date, minimumSpend, ticketPrice, eventType, minimumSpendMode } =
+    req.body;
   if (!name || !date) return res.status(400).json('Name and date are required');
 
   const event = await prisma.event.create({
@@ -42,6 +43,8 @@ async function handlePOST(req: NextApiRequest, res: NextApiResponse) {
       name,
       date: new Date(date),
       minimumSpend,
+      eventType,
+      minimumSpendMode,
       ticketPrice,
     },
   });

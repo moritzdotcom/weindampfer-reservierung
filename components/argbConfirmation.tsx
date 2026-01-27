@@ -20,32 +20,40 @@ export default function ARGBConfirmation({
         <Checkbox
           checked={checked}
           onChange={handleChange}
-          sx={{
-            color: 'white',
-            '&.Mui-checked': { color: 'white' },
-          }}
+          sx={(theme) => ({
+            color: theme.palette.text.secondary,
+            '&.Mui-checked': { color: theme.palette.primary.main },
+          })}
         />
       }
       label={
         <Typography
           variant="body2"
-          sx={{
+          sx={(theme) => ({
             fontSize: '0.875rem',
-            color: 'var(--color-gray-300)',
+            color: theme.palette.text.secondary,
             display: 'inline',
-          }}
+          })}
         >
           Mit dem Absenden akzeptierst du die{' '}
           <Link
             href="/argb"
             target="_blank"
             rel="noopener noreferrer"
-            style={{
-              textDecoration: 'underline',
-              color: 'white',
-            }}
+            style={{ textDecoration: 'underline' }}
           >
-            Allgemeinen Reservierungs- und Geschäftsbedingungen
+            <Typography
+              component="span"
+              sx={(theme) => ({
+                color:
+                  theme.palette.mode === 'dark'
+                    ? theme.palette.common.white
+                    : theme.palette.primary.main,
+                fontWeight: 600,
+              })}
+            >
+              Allgemeinen Reservierungs- und Geschäftsbedingungen
+            </Typography>
           </Link>
           .*
         </Typography>

@@ -1,8 +1,8 @@
 import UseSession from '@/hooks/useSession';
 import '@/styles/globals.css';
 import type { AppProps } from 'next/app';
-import { ThemeProvider } from '@mui/material';
-import theme from '@/theme';
+import { CssBaseline, ThemeProvider } from '@mui/material';
+import { weindampferTheme } from '@/theme';
 
 export default function App({ Component, pageProps }: AppProps) {
   const session = UseSession();
@@ -11,11 +11,13 @@ export default function App({ Component, pageProps }: AppProps) {
     {
       session,
     },
-    pageProps
+    pageProps,
   );
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={weindampferTheme}>
+      <CssBaseline />
+
       <Component {...appProps} />
     </ThemeProvider>
   );

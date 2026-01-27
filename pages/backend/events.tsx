@@ -8,6 +8,7 @@ import {
   TextField,
   Skeleton,
   InputAdornment,
+  MenuItem,
 } from '@mui/material';
 import axios from 'axios';
 import { useRouter } from 'next/router';
@@ -17,6 +18,7 @@ import { ApiPutEventResponse } from '../api/events/[eventId]';
 import { formatEventDate } from '@/lib/event';
 import { Check, CopyAll, Edit } from '@mui/icons-material';
 import BackendBackButton from '@/components/backendBackButton';
+import { EventType, MinimumSpendMode } from '@/generated/prisma';
 
 export default function BackendEventsPage({ session }: { session: Session }) {
   const [events, setEvents] = useState<ApiGetEventsResponse>([]);
@@ -27,7 +29,7 @@ export default function BackendEventsPage({ session }: { session: Session }) {
   const fetchEvents = async () => {
     const res = await axios.get<ApiGetEventsResponse>('/api/events');
     const sorted = res.data.sort(
-      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
     );
     setLoading(false);
     setEvents(sorted);
@@ -170,6 +172,9 @@ function NewEventDialog({
 }) {
   const [name, setName] = useState('');
   const [date, setDate] = useState('');
+  const [minimumSpendMode, setMinimumSpendMode] =
+    useState<MinimumSpendMode>('PerCapita');
+  const [eventType, setEventType] = useState<EventType>('WEINDAMPFER');
   const [minimumSpend, setMinimumSpend] = useState('50');
   const [ticketPrice, setTicketPrice] = useState('30');
 
@@ -177,6 +182,8 @@ function NewEventDialog({
     await axios.post('/api/events', {
       name,
       date,
+      minimumSpendMode,
+      eventType,
       minimumSpend: Number(minimumSpend),
       ticketPrice: Number(ticketPrice),
     });
@@ -215,7 +222,33 @@ function NewEventDialog({
           slotProps={{ inputLabel: { shrink: true } }}
         />
         <TextField
-          label="Mindestverzehr pro Kopf"
+          select
+          label="Event Typ"
+          fullWidth
+          value={eventType}
+          onChange={(e) => {
+            setEventType(e.target.value as EventType);
+          }}
+          margin="normal"
+        >
+          <MenuItem value="WEINDAMPFER">Weindampfer</MenuItem>
+          <MenuItem value="JECKERIA">Jeckeria</MenuItem>
+        </TextField>
+        <TextField
+          select
+          label="Mindestverzehr Art"
+          fullWidth
+          value={minimumSpendMode}
+          onChange={(e) => {
+            setMinimumSpendMode(e.target.value as MinimumSpendMode);
+          }}
+          margin="normal"
+        >
+          <MenuItem value="PerCapita">Pro Kopf</MenuItem>
+          <MenuItem value="PerTable">Pro Tisch</MenuItem>
+        </TextField>
+        <TextField
+          label="Mindestverzehr"
           type="number"
           fullWidth
           value={minimumSpend}
@@ -273,7 +306,11 @@ function EditEventDialog({
 }) {
   const [name, setName] = useState(event.name);
   const [date, setDate] = useState(
-    new Date(event.date).toISOString().split('T')[0]
+    new Date(event.date).toISOString().split('T')[0],
+  );
+  const [eventType, setEventType] = useState<EventType>(event.eventType);
+  const [minimumSpendMode, setMinimumSpendMode] = useState<MinimumSpendMode>(
+    event.minimumSpendMode,
   );
   const [minimumSpend, setMinimumSpend] = useState(event.minimumSpend || '50');
   const [ticketPrice, setTicketPrice] = useState(event.ticketPrice || '30');
@@ -284,9 +321,11 @@ function EditEventDialog({
       {
         name,
         date,
+        eventType,
+        minimumSpendMode,
         minimumSpend: Number(minimumSpend),
         ticketPrice: Number(ticketPrice),
-      }
+      },
     );
     onUpdate(data);
     onClose();
@@ -317,7 +356,33 @@ function EditEventDialog({
           slotProps={{ inputLabel: { shrink: true } }}
         />
         <TextField
-          label="Mindestverzehr pro Kopf"
+          select
+          label="Event Typ"
+          margin="normal"
+          fullWidth
+          value={eventType}
+          onChange={(e) => {
+            setEventType(e.target.value as EventType);
+          }}
+        >
+          <MenuItem value="WEINDAMPFER">Weindampfer</MenuItem>
+          <MenuItem value="JECKERIA">Jeckeria</MenuItem>
+        </TextField>
+        <TextField
+          select
+          label="Mindestverzehr Art"
+          margin="normal"
+          fullWidth
+          value={minimumSpendMode}
+          onChange={(e) => {
+            setMinimumSpendMode(e.target.value as MinimumSpendMode);
+          }}
+        >
+          <MenuItem value="PerCapita">Pro Kopf</MenuItem>
+          <MenuItem value="PerTable">Pro Tisch</MenuItem>
+        </TextField>
+        <TextField
+          label="Mindestverzehr"
           type="number"
           fullWidth
           value={minimumSpend}

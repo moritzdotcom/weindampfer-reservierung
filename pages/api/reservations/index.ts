@@ -6,7 +6,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handle(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   if (req.method === 'GET') {
     await handleGET(req, res);
@@ -14,7 +14,7 @@ export default async function handle(
     await handlePOST(req, res);
   } else {
     throw new Error(
-      `The HTTP ${req.method} method is not supported at this route.`
+      `The HTTP ${req.method} method is not supported at this route.`,
     );
   }
 }
@@ -59,6 +59,7 @@ async function handlePOST(req: NextApiRequest, res: NextApiResponse) {
     people,
     ticketsNeeded,
     occasion,
+    drinkPackage,
     eventId,
     phone,
     streetAddress,
@@ -76,8 +77,6 @@ async function handlePOST(req: NextApiRequest, res: NextApiResponse) {
     return res.status(400).json('Need tickets is required');
   if (typeof eventId !== 'string')
     return res.status(400).json('Event ID is required');
-  if (typeof occasion !== 'string')
-    return res.status(400).json('Occasion is required');
   if (typeof phone !== 'string')
     return res.status(400).json('Phone number is required');
   if (typeof streetAddress !== 'string')
@@ -93,6 +92,7 @@ async function handlePOST(req: NextApiRequest, res: NextApiResponse) {
       people,
       ticketsNeeded,
       occasion,
+      drinkPackage,
       phone,
       streetAddress,
       tableType,
@@ -113,7 +113,7 @@ async function handlePOST(req: NextApiRequest, res: NextApiResponse) {
     email,
     name,
     people,
-    reservation.event.date.toLocaleDateString('de-DE')
+    reservation.event.date.toLocaleDateString('de-DE'),
   );
 
   return res.json(reservation);
