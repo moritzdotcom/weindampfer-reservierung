@@ -1,9 +1,19 @@
 import { Event } from '@/prisma/generated/client';
-import { Button, Divider, MenuItem, TextField } from '@mui/material';
+import {
+  Button,
+  Divider,
+  MenuItem,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import ARGBConfirmation from './argbConfirmation';
 import ReservationCostSummary from './reservationCostSummary';
+import Link from 'next/link';
+import { Info, InfoOutline } from '@mui/icons-material';
+import JeckeriaSeatingPlanPicker from './jeckeriaSeatingPlanPicker';
 
 export default function ReservationFormJeckeria({
   event,
@@ -15,9 +25,9 @@ export default function ReservationFormJeckeria({
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [personCount, setPersonCount] = useState('');
-  const [tableType, setTableType] = useState<'Bühne' | 'Dancefloor'>(
-    'Dancefloor',
-  );
+  const [tableType, setTableType] = useState<
+    'Jecken-Tisch' | 'Bühne' | 'Dancefloor'
+  >('Dancefloor');
   const [drinkPackage, setDrinkPackage] = useState('Fass-Alt');
   const [ticketsNeeded, setTicketsNeeded] = useState('yes');
   const [occasion, setOccasion] = useState('');
@@ -29,6 +39,11 @@ export default function ReservationFormJeckeria({
   const [loading, setLoading] = useState(false);
 
   const isPremium = tableType === 'Bühne';
+  const maxPeople = useMemo(() => {
+    if (tableType === 'Bühne') return 6;
+    if (tableType === 'Jecken-Tisch') return 8;
+    return 8;
+  }, [tableType]);
 
   const [errorObj, setErrorObj] = useState({
     name: '',
@@ -79,11 +94,11 @@ export default function ReservationFormJeckeria({
         email: 'E-Mail darf nicht leer sein',
       }));
     }
-    if (Number(personCount) < 6 || Number(personCount) > 25) {
+    if (Number(personCount) < 4 || Number(personCount) > maxPeople) {
       errorOccured = true;
       setErrorObj((prev) => ({
         ...prev,
-        personCount: 'Anzahl muss zwischen 6 und 25 liegen',
+        personCount: `Anzahl muss zwischen 4 und ${maxPeople} liegen`,
       }));
     }
     if (!name) {
@@ -196,6 +211,12 @@ export default function ReservationFormJeckeria({
     argbChecked,
   ]);
 
+  useEffect(() => {
+    if (Number(personCount) > maxPeople) {
+      setPersonCount(maxPeople.toString());
+    }
+  }, [maxPeople]);
+
   return (
     <div>
       <div className="flex flex-col gap-7">
@@ -280,29 +301,43 @@ export default function ReservationFormJeckeria({
           Angaben zur Reservierung
         </Divider>
         <TextField
-          label="Anzahl Personen"
-          type="number"
-          required
-          error={Boolean(errorObj.personCount)}
-          helperText={errorObj.personCount}
-          slotProps={{ htmlInput: { min: 6, max: 25 } }}
-          value={personCount}
-          onChange={(e) => setPersonCount(e.target.value)}
-          fullWidth
-        />
-        <TextField
           select
           label="Tischart wählen"
           fullWidth
           value={tableType}
           onChange={(e) => {
-            setTableType(e.target.value as 'Bühne' | 'Dancefloor');
+            setTableType(
+              e.target.value as 'Jecken-Tisch' | 'Bühne' | 'Dancefloor',
+            );
           }}
         >
+          <MenuItem value="Jecken-Tisch">Jecken-Tisch</MenuItem>
           <MenuItem value="Dancefloor">
             Jecken-Stehtisch auf der Tanzfläche
           </MenuItem>
           <MenuItem value="Bühne">Jecken-Stehtisch auf der Bühne</MenuItem>
+        </TextField>
+        <div className="max-w-sm mx-auto">
+          <JeckeriaSeatingPlanPicker
+            value={tableType}
+            onChange={(next) => setTableType(next)}
+          />
+        </div>
+        <TextField
+          select
+          label="Anzahl Personen"
+          fullWidth
+          helperText={errorObj.personCount || `Maximal ${maxPeople} Personen`}
+          value={personCount}
+          onChange={(e) => {
+            setPersonCount(e.target.value);
+          }}
+        >
+          <MenuItem value="4">4 Personen</MenuItem>
+          <MenuItem value="5">5 Personen</MenuItem>
+          <MenuItem value="6">6 Personen</MenuItem>
+          {tableType !== 'Bühne' && <MenuItem value="7">7 Personen</MenuItem>}
+          {tableType !== 'Bühne' && <MenuItem value="8">8 Personen</MenuItem>}
         </TextField>
         <TextField
           select
