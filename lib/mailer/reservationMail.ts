@@ -52,8 +52,8 @@ export default function sendReservationMail(
                 <p><strong>Zahlungsdaten:</strong><br/>
                   Bitte überweise <strong>${price} €</strong> im Voraus auf folgendes Konto:<br/>
                   Name: KM Entertainment GmbH<br/>
-                  IBAN: DE49 3016 0213 0088 9520 14<br/>
-                  BIC: GENODED1DNE<br/>
+                  IBAN: DE38 3004 0000 0103 1830 00<br/>
+                  BIC: COBADEFFXXX<br/>
                   Verwendungszweck: Tischreservierung ${name} / ${date}
                 </p>
                 <p style="color:#000000; font-weight:bold;">

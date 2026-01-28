@@ -56,8 +56,8 @@ export default function sendPaymentReminderMail(
                 <hr style="border:none; border-top:1px solid #cccccc; margin:16px 0;" />
                 <p><strong>Zahlungsdaten:</strong><br/>
                   Name: KM Entertainment GmbH<br/>
-                  IBAN: DE49 3016 0213 0088 9520 14<br/>
-                  BIC: GENODED1DNE<br/>
+                  IBAN: DE38 3004 0000 0103 1830 00<br/>
+                  BIC: COBADEFFXXX<br/>
                   Verwendungszweck: Tischreservierung ${name} / ${date}
                 </p>
                 <p style="color:#cc0000; font-weight:bold;">
