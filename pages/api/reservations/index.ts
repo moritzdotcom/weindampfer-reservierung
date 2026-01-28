@@ -1,7 +1,7 @@
-import { Prisma } from '@/generated/prisma';
 import sendReservationConfirmationMail from '@/lib/mailer/reservationConfirmationMail';
 import prisma from '@/lib/prismadb';
 import { getServerSession } from '@/lib/session';
+import { Prisma } from '@/prisma/generated/client';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handle(
@@ -66,6 +66,7 @@ async function handlePOST(req: NextApiRequest, res: NextApiResponse) {
     tableType,
     city,
     zipCode,
+    isPremium,
   } = req.body;
 
   if (typeof name !== 'string') return res.status(400).json('Name is required');
@@ -98,6 +99,7 @@ async function handlePOST(req: NextApiRequest, res: NextApiResponse) {
       tableType,
       city,
       zipCode,
+      isPremium,
       event: { connect: { id: eventId } },
     },
     include: {

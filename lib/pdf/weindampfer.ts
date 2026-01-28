@@ -3,7 +3,7 @@ import PDFDocument from 'pdfkit';
 import fs from 'fs';
 import path from 'path';
 import { fullEventName } from '@/lib/event';
-import { Prisma } from '@/generated/prisma';
+import { Prisma } from '@/prisma/generated/client';
 
 type TableItem = { text: string; align: 'left' | 'right'; color?: string };
 

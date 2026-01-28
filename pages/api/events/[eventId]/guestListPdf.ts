@@ -23,8 +23,6 @@ export default async function handle(
   }
 }
 
-type TableItem = { text: string; align: 'left' | 'right'; color?: string };
-
 async function handleGET(
   req: NextApiRequest,
   res: NextApiResponse,

@@ -1,7 +1,7 @@
 import AdminHeader from '@/components/adminHeader';
 import HtmlHead from '@/components/head';
 import ReservationForm from '@/components/reservationForm';
-import { Event } from '@/generated/prisma';
+import { Event } from '@/prisma/generated/client';
 import { Session } from '@/hooks/useSession';
 import prisma from '@/lib/prismadb';
 import { GetServerSidePropsContext } from 'next';
@@ -32,7 +32,7 @@ export async function getServerSideProps({
 }: GetServerSidePropsContext) {
   res.setHeader(
     'Cache-Control',
-    'public, s-maxage=10, stale-while-revalidate=59'
+    'public, s-maxage=10, stale-while-revalidate=59',
   );
   const eventId = query.eventId as string | undefined;
 

@@ -5,13 +5,12 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
-  output   = "../generated/prisma"
+  provider = "prisma-client"
+  output   = "./generated"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -30,15 +29,17 @@ model Session {
 }
 
 model Event {
-  id               String           @id @default(uuid())
-  name             String
-  date             DateTime
-  minimumSpend     Int              @default(50)
-  ticketPrice      Int              @default(30)
-  minimumSpendMode MinimumSpendMode @default(PerCapita)
-  eventType        EventType        @default(WEINDAMPFER)
-  createdAt        DateTime         @default(now())
-  reservations     Reservation[]
+  id                  String           @id @default(uuid())
+  name                String
+  date                DateTime
+  minimumSpend        Int              @default(50)
+  ticketPrice         Int              @default(30)
+  minimumSpendPremium Int?
+  ticketPricePremium  Int?
+  minimumSpendMode    MinimumSpendMode @default(PerCapita)
+  eventType           EventType        @default(WEINDAMPFER)
+  createdAt           DateTime         @default(now())
+  reservations        Reservation[]
 }
 
 model Reservation {
@@ -53,6 +54,7 @@ model Reservation {
   occasion             String            @default("")
   ticketsNeeded        Boolean           @default(false)
   tableType            String            @default("")
+  isPremium            Boolean           @default(false)
   drinkPackage         String            @default("")
   eventId              String
   event                Event             @relation(fields: [eventId], references: [id])

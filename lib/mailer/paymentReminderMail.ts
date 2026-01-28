@@ -1,4 +1,4 @@
-import { EventType } from '@/generated/prisma';
+import { EventType } from '@/prisma/generated/client';
 import { renderGreeting, renderImage, sendMail } from '@/lib/mailer';
 
 export default function sendPaymentReminderMail(

@@ -1,4 +1,4 @@
-import { Event } from '@/generated/prisma';
+import { Event } from '@/prisma/generated/client';
 import { Button, Divider, MenuItem, TextField } from '@mui/material';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
@@ -15,7 +15,9 @@ export default function ReservationFormJeckeria({
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [personCount, setPersonCount] = useState('');
-  const [tableType, setTableType] = useState('Dancefloor');
+  const [tableType, setTableType] = useState<'Bühne' | 'Dancefloor'>(
+    'Dancefloor',
+  );
   const [drinkPackage, setDrinkPackage] = useState('Fass-Alt');
   const [ticketsNeeded, setTicketsNeeded] = useState('yes');
   const [occasion, setOccasion] = useState('');
@@ -25,6 +27,8 @@ export default function ReservationFormJeckeria({
   const [zipCode, setZipCode] = useState('');
   const [argbChecked, setArgbChecked] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const isPremium = tableType === 'Bühne';
 
   const [errorObj, setErrorObj] = useState({
     name: '',
@@ -149,6 +153,7 @@ export default function ReservationFormJeckeria({
         streetAddress,
         city,
         zipCode,
+        isPremium: tableType === 'Bühne',
       });
       // Reset form after successful submission
       resetErrorObj();
@@ -291,7 +296,7 @@ export default function ReservationFormJeckeria({
           fullWidth
           value={tableType}
           onChange={(e) => {
-            setTableType(e.target.value);
+            setTableType(e.target.value as 'Bühne' | 'Dancefloor');
           }}
         >
           <MenuItem value="Dancefloor">
@@ -308,9 +313,19 @@ export default function ReservationFormJeckeria({
             setDrinkPackage(e.target.value);
           }}
         >
-          <MenuItem value="Fass-Alt">10l Fass Alt</MenuItem>
-          <MenuItem value="Fass-Pils">10l Fass Pils</MenuItem>
-          <MenuItem value="Weinpaket">120€ Weinguthaben</MenuItem>
+          <MenuItem value="Fass-Alt">
+            {isPremium ? '10l Fass Alt + 1 Flasche Champagner' : '10l Fass Alt'}
+          </MenuItem>
+          <MenuItem value="Fass-Pils">
+            {isPremium
+              ? '10l Fass Pils + 1 Flasche Champagner'
+              : '10l Fass Pils'}
+          </MenuItem>
+          <MenuItem value="Weinpaket">
+            {isPremium
+              ? '120€ Weinguthaben + 1 Flasche Champagner'
+              : '120€ Weinguthaben'}
+          </MenuItem>
         </TextField>
         <TextField
           select
@@ -334,9 +349,9 @@ export default function ReservationFormJeckeria({
         <ReservationCostSummary
           personCount={Number(personCount)}
           ticketsNeeded={ticketsNeeded === 'yes'}
-          minimumSpend={event?.minimumSpend || 0}
-          ticketPrice={event?.ticketPrice || 0}
-          minimumSpendMode={event?.minimumSpendMode || 'PerCapita'}
+          isPremium={tableType === 'Bühne'}
+          minimumSpendLabel="Getränkepaket"
+          event={event}
         />
         <ARGBConfirmation onChecked={setArgbChecked} />
         <div>

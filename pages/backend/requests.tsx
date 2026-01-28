@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import SortButton from '@/components/sortButton';
-import { ConfirmationState } from '@/generated/prisma';
+import { ConfirmationState } from '@/prisma/generated/client';
 import { ApiGetReservationsResponse } from '../api/events/[eventId]/reservations';
 import { translateState, translateStateAdj } from '@/lib/reservation';
 import { WarningAmber } from '@mui/icons-material';

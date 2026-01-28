@@ -1,4 +1,4 @@
-import { Prisma } from '@/generated/prisma';
+import { Prisma } from '@/prisma/generated/client';
 import prisma from '@/lib/prismadb';
 import { getServerSession } from '@/lib/session';
 import { NextApiRequest, NextApiResponse } from 'next';
@@ -34,8 +34,16 @@ async function handleGET(req: NextApiRequest, res: NextApiResponse) {
 export type ApiPostEventResponse = Prisma.EventGetPayload<{}>;
 
 async function handlePOST(req: NextApiRequest, res: NextApiResponse) {
-  const { name, date, minimumSpend, ticketPrice, eventType, minimumSpendMode } =
-    req.body;
+  const {
+    name,
+    date,
+    minimumSpend,
+    ticketPrice,
+    eventType,
+    minimumSpendMode,
+    minimumSpendPremium,
+    ticketPricePremium,
+  } = req.body;
   if (!name || !date) return res.status(400).json('Name and date are required');
 
   const event = await prisma.event.create({
@@ -44,6 +52,8 @@ async function handlePOST(req: NextApiRequest, res: NextApiResponse) {
       date: new Date(date),
       minimumSpend,
       eventType,
+      minimumSpendPremium,
+      ticketPricePremium,
       minimumSpendMode,
       ticketPrice,
     },

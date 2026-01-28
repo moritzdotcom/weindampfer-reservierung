@@ -1,7 +1,7 @@
 import { NextApiResponse } from 'next';
 import PDFDocument from 'pdfkit';
 import { fullEventName } from '@/lib/event';
-import { Prisma } from '@/generated/prisma';
+import { Prisma } from '@/prisma/generated/client';
 
 type TableItem = { text: string; align: 'left' | 'right'; color?: string };
 

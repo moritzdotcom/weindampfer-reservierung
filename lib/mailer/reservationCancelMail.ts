@@ -1,5 +1,5 @@
-import { EventType } from '@/generated/prisma/wasm';
 import { renderGreeting, renderImage, sendMail } from '@/lib/mailer';
+import { EventType } from '@/prisma/generated/enums';
 
 export default function sendReservationCancelMail(
   email: string,

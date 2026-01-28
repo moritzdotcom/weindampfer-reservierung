@@ -18,7 +18,7 @@ import { ApiPutEventResponse } from '../api/events/[eventId]';
 import { formatEventDate } from '@/lib/event';
 import { Check, CopyAll, Edit } from '@mui/icons-material';
 import BackendBackButton from '@/components/backendBackButton';
-import { EventType, MinimumSpendMode } from '@/generated/prisma';
+import { EventType, MinimumSpendMode } from '@/prisma/generated/client';
 
 export default function BackendEventsPage({ session }: { session: Session }) {
   const [events, setEvents] = useState<ApiGetEventsResponse>([]);
@@ -177,6 +177,8 @@ function NewEventDialog({
   const [eventType, setEventType] = useState<EventType>('WEINDAMPFER');
   const [minimumSpend, setMinimumSpend] = useState('50');
   const [ticketPrice, setTicketPrice] = useState('30');
+  const [minimumSpendPremium, setMinimumSpendPremium] = useState('');
+  const [ticketPricePremium, setTicketPricePremium] = useState('');
 
   const handleCreate = async () => {
     await axios.post('/api/events', {
@@ -186,11 +188,19 @@ function NewEventDialog({
       eventType,
       minimumSpend: Number(minimumSpend),
       ticketPrice: Number(ticketPrice),
+      minimumSpendPremium: minimumSpendPremium
+        ? Number(minimumSpendPremium)
+        : undefined,
+      ticketPricePremium: ticketPricePremium
+        ? Number(ticketPricePremium)
+        : undefined,
     });
     setName('');
     setDate('');
     setMinimumSpend('50');
     setTicketPrice('30');
+    setMinimumSpendPremium('');
+    setTicketPricePremium('');
     onSuccess();
     onClose();
   };
@@ -261,11 +271,37 @@ function NewEventDialog({
           }}
         />
         <TextField
+          label="Mindestverzehr (Premium)"
+          type="number"
+          fullWidth
+          value={minimumSpendPremium}
+          onChange={(e) => setMinimumSpendPremium(e.target.value)}
+          margin="normal"
+          slotProps={{
+            input: {
+              endAdornment: <InputAdornment position="end">€</InputAdornment>,
+            },
+          }}
+        />
+        <TextField
           label="Ticketpreis"
           type="number"
           fullWidth
           value={ticketPrice}
           onChange={(e) => setTicketPrice(e.target.value)}
+          margin="normal"
+          slotProps={{
+            input: {
+              endAdornment: <InputAdornment position="end">€</InputAdornment>,
+            },
+          }}
+        />
+        <TextField
+          label="Ticketpreis (Premium)"
+          type="number"
+          fullWidth
+          value={ticketPricePremium}
+          onChange={(e) => setTicketPricePremium(e.target.value)}
           margin="normal"
           slotProps={{
             input: {
@@ -314,6 +350,12 @@ function EditEventDialog({
   );
   const [minimumSpend, setMinimumSpend] = useState(event.minimumSpend || '50');
   const [ticketPrice, setTicketPrice] = useState(event.ticketPrice || '30');
+  const [minimumSpendPremium, setMinimumSpendPremium] = useState(
+    event.minimumSpendPremium || '',
+  );
+  const [ticketPricePremium, setTicketPricePremium] = useState(
+    event.ticketPricePremium || '',
+  );
 
   const handleUpdate = async () => {
     const { data } = await axios.put<ApiPutEventResponse>(
@@ -325,6 +367,12 @@ function EditEventDialog({
         minimumSpendMode,
         minimumSpend: Number(minimumSpend),
         ticketPrice: Number(ticketPrice),
+        minimumSpendPremium: minimumSpendPremium
+          ? Number(minimumSpendPremium)
+          : undefined,
+        ticketPricePremium: ticketPricePremium
+          ? Number(ticketPricePremium)
+          : undefined,
       },
     );
     onUpdate(data);
@@ -395,11 +443,38 @@ function EditEventDialog({
           }}
         />
         <TextField
+          label="Mindestverzehr (Premium)"
+          type="number"
+          fullWidth
+          value={minimumSpendPremium}
+          onChange={(e) => setMinimumSpendPremium(e.target.value)}
+          margin="normal"
+          slotProps={{
+            input: {
+              endAdornment: <InputAdornment position="end">€</InputAdornment>,
+            },
+          }}
+        />
+
+        <TextField
           label="Ticketpreis"
           type="number"
           fullWidth
           value={ticketPrice}
           onChange={(e) => setTicketPrice(e.target.value)}
+          margin="normal"
+          slotProps={{
+            input: {
+              endAdornment: <InputAdornment position="end">€</InputAdornment>,
+            },
+          }}
+        />
+        <TextField
+          label="Ticketpreis (Premium)"
+          type="number"
+          fullWidth
+          value={ticketPricePremium}
+          onChange={(e) => setTicketPricePremium(e.target.value)}
           margin="normal"
           slotProps={{
             input: {

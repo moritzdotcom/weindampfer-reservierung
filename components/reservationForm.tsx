@@ -1,4 +1,4 @@
-import { Event } from '@/generated/prisma';
+import { Event } from '@/prisma/generated/client';
 import { fullEventName } from '@/lib/event';
 import {
   CssBaseline,

@@ -1,11 +1,11 @@
-import { Prisma } from '@/generated/prisma';
+import { Prisma } from '@/prisma/generated/client';
 import prisma from '@/lib/prismadb';
 import { getServerSession } from '@/lib/session';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handle(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   const session = await getServerSession(req);
   if (!session) return res.status(401).json('Not authenticated');
@@ -17,7 +17,7 @@ export default async function handle(
     await handleGET(req, res, eventId);
   } else {
     throw new Error(
-      `The HTTP ${req.method} method is not supported at this route.`
+      `The HTTP ${req.method} method is not supported at this route.`,
     );
   }
 }
@@ -28,6 +28,9 @@ export type ApiGetReservationsResponse = Prisma.ReservationGetPayload<{
       select: {
         minimumSpend: true;
         ticketPrice: true;
+        minimumSpendPremium: true;
+        ticketPricePremium: true;
+        minimumSpendMode: true;
       };
     };
   };
@@ -36,7 +39,7 @@ export type ApiGetReservationsResponse = Prisma.ReservationGetPayload<{
 async function handleGET(
   req: NextApiRequest,
   res: NextApiResponse,
-  id: string
+  id: string,
 ) {
   const reservations = await prisma.reservation.findMany({
     where: { eventId: id },
@@ -45,6 +48,9 @@ async function handleGET(
         select: {
           minimumSpend: true,
           ticketPrice: true,
+          minimumSpendPremium: true,
+          ticketPricePremium: true,
+          minimumSpendMode: true,
         },
       },
     },

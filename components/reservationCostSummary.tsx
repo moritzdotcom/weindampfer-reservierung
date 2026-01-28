@@ -1,24 +1,50 @@
-import { MinimumSpendMode } from '@/generated/prisma';
+import {
+  reservationMinimumSpendPrice,
+  reservationTicketPrice,
+} from '@/lib/reservation';
+import { MinimumSpendMode } from '@/prisma/generated/client';
 import { Box } from '@mui/material';
 
+type EventProp = {
+  minimumSpend: number;
+  ticketPrice: number;
+  minimumSpendPremium: number | null;
+  ticketPricePremium: number | null;
+  minimumSpendMode: MinimumSpendMode;
+};
 export default function ReservationCostSummary({
   personCount,
   ticketsNeeded,
-  minimumSpend,
-  ticketPrice,
-  minimumSpendMode,
+  isPremium = false,
+  minimumSpendLabel = 'Mindestverzehr',
+  event,
 }: {
   personCount: number;
   ticketsNeeded: boolean;
-  minimumSpend: number;
-  ticketPrice: number;
-  minimumSpendMode: MinimumSpendMode;
+  isPremium?: boolean;
+  minimumSpendLabel?: string;
+  event: EventProp;
 }) {
-  const totalMinimumSpend =
-    minimumSpendMode === 'PerCapita'
-      ? personCount * minimumSpend
-      : minimumSpend;
-  const totalTicketCost = ticketsNeeded ? personCount * ticketPrice : 0;
+  const {
+    minimumSpend,
+    ticketPrice,
+    minimumSpendPremium,
+    ticketPricePremium,
+    minimumSpendMode,
+  } = event;
+
+  const totalMinimumSpend = reservationMinimumSpendPrice({
+    people: personCount,
+    isPremium,
+    event,
+  });
+  const totalTicketCost = reservationTicketPrice({
+    people: personCount,
+    ticketsNeeded,
+    isPremium,
+    event,
+  });
+
   const totalCost = totalMinimumSpend + totalTicketCost;
 
   return (
@@ -31,17 +57,23 @@ export default function ReservationCostSummary({
         <div className="flex justify-between">
           {minimumSpendMode === 'PerCapita' ? (
             <span>
-              Mindestverzehr ({minimumSpend} € x {personCount} Personen):
+              {minimumSpendLabel} (
+              {isPremium ? minimumSpendPremium : minimumSpend} € x {personCount}{' '}
+              Personen):
             </span>
           ) : (
-            <span>Mindestverzehr ({minimumSpend} € pro Tisch):</span>
+            <span>
+              {minimumSpendLabel} (
+              {isPremium ? minimumSpendPremium : minimumSpend} € pro Tisch):
+            </span>
           )}
           <span className="whitespace-nowrap">{totalMinimumSpend} €</span>
         </div>
         {ticketsNeeded && (
           <div className="flex justify-between">
             <span>
-              Tickets ({personCount} x {ticketPrice} €):
+              Tickets ({personCount} x{' '}
+              {isPremium ? ticketPricePremium : ticketPrice} €):
             </span>
             <span className="whitespace-nowrap">{totalTicketCost} €</span>
           </div>

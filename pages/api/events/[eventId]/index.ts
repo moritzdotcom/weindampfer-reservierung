@@ -1,4 +1,4 @@
-import { Prisma } from '@/generated/prisma';
+import { Prisma } from '@/prisma/generated/client';
 import prisma from '@/lib/prismadb';
 import { getServerSession } from '@/lib/session';
 import { NextApiRequest, NextApiResponse } from 'next';
@@ -38,6 +38,8 @@ async function handlePUT(
       eventType: req.body.eventType,
       minimumSpendMode: req.body.minimumSpendMode,
       ticketPrice: req.body.ticketPrice,
+      minimumSpendPremium: req.body.minimumSpendPremium,
+      ticketPricePremium: req.body.ticketPricePremium,
     },
   });
   return res.json(event);

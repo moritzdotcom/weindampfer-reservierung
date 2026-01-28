@@ -1,7 +1,7 @@
 import AdminHeader from '@/components/adminHeader';
 import HtmlHead from '@/components/head';
 import ReservationForm from '@/components/reservationForm';
-import { Event } from '@/generated/prisma';
+import { Event } from '@/prisma/generated/client';
 import { Session } from '@/hooks/useSession';
 import prisma from '@/lib/prismadb';
 import { GetServerSidePropsContext } from 'next';
@@ -29,16 +29,25 @@ export default function ReservationPage({
 export async function getServerSideProps({ res }: GetServerSidePropsContext) {
   res.setHeader(
     'Cache-Control',
-    'public, s-maxage=10, stale-while-revalidate=59'
+    'public, s-maxage=10, stale-while-revalidate=59',
   );
 
-  const events = await prisma.event.findMany({
-    where: { date: { gte: new Date() } },
-  });
+  try {
+    const events = await prisma.event.findMany({
+      where: { date: { gte: new Date() } },
+    });
 
-  return {
-    props: {
-      events: JSON.parse(JSON.stringify(events)),
-    },
-  };
+    return {
+      props: {
+        events: JSON.parse(JSON.stringify(events)),
+      },
+    };
+  } catch (error) {
+    console.error('Error fetching events:', error);
+    return {
+      props: {
+        events: [],
+      },
+    };
+  }
 }

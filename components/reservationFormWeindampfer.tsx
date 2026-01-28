@@ -1,4 +1,4 @@
-import { Event } from '@/generated/prisma';
+import { Event } from '@/prisma/generated/client';
 import { Divider, MenuItem, TextField } from '@mui/material';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
@@ -329,9 +329,7 @@ export default function ReservationFormWeindampfer({
         <ReservationCostSummary
           personCount={Number(personCount)}
           ticketsNeeded={ticketsNeeded === 'yes'}
-          minimumSpend={event?.minimumSpend || 0}
-          ticketPrice={event?.ticketPrice || 0}
-          minimumSpendMode={event?.minimumSpendMode || 'PerCapita'}
+          event={event}
         />
         <ARGBConfirmation onChecked={setArgbChecked} />
         <div>

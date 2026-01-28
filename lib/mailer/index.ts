@@ -1,4 +1,4 @@
-import { EventType } from '@/generated/prisma';
+import { EventType } from '@/prisma/generated/client';
 import nodemailer from 'nodemailer';
 
 const transporter = nodemailer.createTransport({

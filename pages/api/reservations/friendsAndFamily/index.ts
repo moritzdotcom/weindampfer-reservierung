@@ -1,4 +1,4 @@
-import { Prisma } from '@/generated/prisma';
+import { Prisma } from '@/prisma/generated/client';
 import sendReservationConfirmationMail from '@/lib/mailer/reservationConfirmationMail';
 import prisma from '@/lib/prismadb';
 import { getServerSession } from '@/lib/session';
