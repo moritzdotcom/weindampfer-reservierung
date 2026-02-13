@@ -158,6 +158,7 @@ export default function ReservationCard({
       <Typography className="text-gray-400 hover:text-gray-200 transition">
         {reservation.tableType}
         {reservation.drinkPackage ? ` • ${reservation.drinkPackage}` : ''}
+        {reservation.ticketsNeeded ? ` • Tickets benötigt` : ''}
       </Typography>
       <Typography className="text-sm text-gray-400 hover:text-gray-200 transition">
         {reservation.email} / {reservation.phone}
