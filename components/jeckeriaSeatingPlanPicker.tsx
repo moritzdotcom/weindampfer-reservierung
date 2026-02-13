@@ -13,6 +13,7 @@ type Zone = {
   id: string;
   tableType: TableType;
   label: string;
+  disabled?: boolean;
   // percentages relative to image
   rects: Array<{ left: number; top: number; width: number; height: number }>;
 };
@@ -22,7 +23,7 @@ const ZONES: Zone[] = [
     id: 'jecken',
     tableType: 'Jecken-Tisch',
     label: 'Jecken-Tisch',
-    // zwei Blöcke oben links & oben rechts
+    disabled: true,
     rects: [
       { left: 8, top: 21, width: 31, height: 13 }, // left
       { left: 62, top: 21, width: 31, height: 13 }, // right
@@ -93,7 +94,7 @@ export default function JeckeriaSeatingPlanPicker({
                 onMouseLeave={() => setHoveredType(null)}
                 onFocus={() => setHoveredType(zone.tableType)}
                 onBlur={() => setHoveredType(null)}
-                onClick={() => onChange(zone.tableType)}
+                onClick={() => (zone.disabled ? {} : onChange(zone.tableType))}
                 onKeyDown={(e) => {
                   if (isActivationKey(e)) {
                     e.preventDefault();

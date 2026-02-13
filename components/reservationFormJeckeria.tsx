@@ -311,7 +311,9 @@ export default function ReservationFormJeckeria({
             );
           }}
         >
-          <MenuItem value="Jecken-Tisch">Jecken-Tisch</MenuItem>
+          <MenuItem disabled value="Jecken-Tisch">
+            Jecken-Tisch (Ausverkauft)
+          </MenuItem>
           <MenuItem value="Dancefloor">
             Jecken-Stehtisch auf der Tanzfläche
           </MenuItem>
