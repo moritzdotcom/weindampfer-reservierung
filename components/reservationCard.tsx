@@ -299,7 +299,7 @@ export default function ReservationCard({
             reservation.payed ||
             !reservation.notified ||
             new Date(reservation.notified).getTime() - new Date().getTime() <
-              1000 * 60 * 60 * 24 * 7
+              1000 * 60 * 60 * 24 * 1
           }
           onClick={handlePaymentReminder}
         >
