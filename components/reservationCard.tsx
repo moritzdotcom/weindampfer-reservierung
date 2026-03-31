@@ -21,7 +21,11 @@ import { motion } from 'framer-motion';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import CheckIcon from '@mui/icons-material/Check';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import { fullReservationPrice } from '@/lib/reservation';
+import {
+  fullReservationPrice,
+  reservationMinimumSpendPrice,
+  reservationTicketPrice,
+} from '@/lib/reservation';
 
 export default function ReservationCard({
   reservation,
@@ -170,9 +174,13 @@ export default function ReservationCard({
       )}
 
       <div className="flex items-center gap-2 my-2">
-        <Typography className="text-sm mt-1 font-medium">
-          {fullReservationPrice(reservation)} €
-        </Typography>
+        <Tooltip
+          title={`🎟️ ${reservationTicketPrice(reservation)} - 🥂 ${reservationMinimumSpendPrice(reservation)}`}
+        >
+          <Typography className="text-sm mt-1 font-medium">
+            {fullReservationPrice(reservation)} €
+          </Typography>
+        </Tooltip>
         <Tooltip
           title={reservation.payed ? 'Zahlung erhalten' : 'Zahlung ausstehend'}
         >
