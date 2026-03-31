@@ -31,8 +31,16 @@ export type ApiPostReservationResponse = Prisma.ReservationGetPayload<{
 }>;
 
 async function handlePOST(req: NextApiRequest, res: NextApiResponse) {
-  const { name, email, people, ticketsNeeded, occasion, eventId, tableType } =
-    req.body;
+  const {
+    name,
+    email,
+    people,
+    ticketsNeeded,
+    occasion,
+    eventId,
+    tableType,
+    overrideMinimumSpend,
+  } = req.body;
 
   if (typeof name !== 'string') return res.status(400).json('Name is required');
   if (typeof email !== 'string')
@@ -54,6 +62,7 @@ async function handlePOST(req: NextApiRequest, res: NextApiResponse) {
       ticketsNeeded,
       occasion,
       tableType,
+      overrideMinimumSpend,
       confirmationState: 'CONFIRMED',
       event: { connect: { id: eventId } },
     },

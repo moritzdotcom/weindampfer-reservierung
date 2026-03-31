@@ -4,7 +4,13 @@ import axios from 'axios';
 import { Session } from '@/hooks/useSession';
 import { ApiGetEventsResponse } from '../api/events';
 import BackendBackButton from '@/components/backendBackButton';
-import { Divider, MenuItem, TextField, Typography } from '@mui/material';
+import {
+  Divider,
+  InputAdornment,
+  MenuItem,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { fullEventName } from '@/lib/event';
 
 export default function BackendFriendsAndFamilyPage({
@@ -21,8 +27,9 @@ export default function BackendFriendsAndFamilyPage({
   const [tableType, setTableType] = useState('Stehtisch');
   const [ticketsNeeded, setTicketsNeeded] = useState('yes');
   const [occasion, setOccasion] = useState(
-    `Friends & Family - Eingeladen von ${session?.user?.name}`
+    `Friends & Family - Eingeladen von ${session?.user?.name}`,
   );
+  const [overrideMinimumSpend, setOverrideMinimumSpend] = useState('');
 
   const [errorObj, setErrorObj] = useState({
     name: '',
@@ -111,6 +118,7 @@ export default function BackendFriendsAndFamilyPage({
         tableType,
         ticketsNeeded: ticketsNeeded === 'yes',
         occasion,
+        overrideMinimumSpend: Number(overrideMinimumSpend),
       });
       // Reset form after successful submission
       resetErrorObj();
@@ -120,6 +128,7 @@ export default function BackendFriendsAndFamilyPage({
       setTableType('Stehtisch');
       setTicketsNeeded('yes');
       setOccasion(`Friends & Family - Eingeladen von ${session?.user?.name}`);
+      setOverrideMinimumSpend('');
       setFormDirty(false);
       setShowSuccess(true);
     } catch (error) {
@@ -134,7 +143,7 @@ export default function BackendFriendsAndFamilyPage({
 
   const selectedEvent = useMemo(
     () => events.filter((e) => e.id == selectedEventId)[0],
-    [selectedEventId, events]
+    [selectedEventId, events],
   );
 
   useEffect(() => {
@@ -154,8 +163,8 @@ export default function BackendFriendsAndFamilyPage({
         } else {
           setSelectedEventId(
             data.sort(
-              (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-            )[0].id
+              (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+            )[0].id,
           );
         }
       });
@@ -257,6 +266,19 @@ export default function BackendFriendsAndFamilyPage({
             <MenuItem value="yes">Ja</MenuItem>
             <MenuItem value="no">Nein</MenuItem>
           </TextField>
+          <TextField
+            label="Mindestverzehr"
+            type="number"
+            required
+            slotProps={{
+              input: {
+                endAdornment: <InputAdornment position="end">€</InputAdornment>,
+              },
+            }}
+            value={overrideMinimumSpend}
+            onChange={(e) => setOverrideMinimumSpend(e.target.value)}
+            fullWidth
+          />
           <TextField
             fullWidth
             label="Anlass"

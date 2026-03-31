@@ -791,6 +791,7 @@ export const ReservationScalarFieldEnum = {
   tableType: 'tableType',
   isPremium: 'isPremium',
   drinkPackage: 'drinkPackage',
+  overrideMinimumSpend: 'overrideMinimumSpend',
   eventId: 'eventId',
   confirmationState: 'confirmationState',
   tableNumber: 'tableNumber',

@@ -56,6 +56,7 @@ model Reservation {
   tableType            String            @default("")
   isPremium            Boolean           @default(false)
   drinkPackage         String            @default("")
+  overrideMinimumSpend Int?
   eventId              String
   event                Event             @relation(fields: [eventId], references: [id])
   confirmationState    ConfirmationState @default(REQUESTED)

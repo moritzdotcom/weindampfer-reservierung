@@ -28,10 +28,12 @@ export type AggregateReservation = {
 
 export type ReservationAvgAggregateOutputType = {
   people: number | null
+  overrideMinimumSpend: number | null
 }
 
 export type ReservationSumAggregateOutputType = {
   people: number | null
+  overrideMinimumSpend: number | null
 }
 
 export type ReservationMinAggregateOutputType = {
@@ -48,6 +50,7 @@ export type ReservationMinAggregateOutputType = {
   tableType: string | null
   isPremium: boolean | null
   drinkPackage: string | null
+  overrideMinimumSpend: number | null
   eventId: string | null
   confirmationState: $Enums.ConfirmationState | null
   tableNumber: string | null
@@ -73,6 +76,7 @@ export type ReservationMaxAggregateOutputType = {
   tableType: string | null
   isPremium: boolean | null
   drinkPackage: string | null
+  overrideMinimumSpend: number | null
   eventId: string | null
   confirmationState: $Enums.ConfirmationState | null
   tableNumber: string | null
@@ -98,6 +102,7 @@ export type ReservationCountAggregateOutputType = {
   tableType: number
   isPremium: number
   drinkPackage: number
+  overrideMinimumSpend: number
   eventId: number
   confirmationState: number
   tableNumber: number
@@ -113,10 +118,12 @@ export type ReservationCountAggregateOutputType = {
 
 export type ReservationAvgAggregateInputType = {
   people?: true
+  overrideMinimumSpend?: true
 }
 
 export type ReservationSumAggregateInputType = {
   people?: true
+  overrideMinimumSpend?: true
 }
 
 export type ReservationMinAggregateInputType = {
@@ -133,6 +140,7 @@ export type ReservationMinAggregateInputType = {
   tableType?: true
   isPremium?: true
   drinkPackage?: true
+  overrideMinimumSpend?: true
   eventId?: true
   confirmationState?: true
   tableNumber?: true
@@ -158,6 +166,7 @@ export type ReservationMaxAggregateInputType = {
   tableType?: true
   isPremium?: true
   drinkPackage?: true
+  overrideMinimumSpend?: true
   eventId?: true
   confirmationState?: true
   tableNumber?: true
@@ -183,6 +192,7 @@ export type ReservationCountAggregateInputType = {
   tableType?: true
   isPremium?: true
   drinkPackage?: true
+  overrideMinimumSpend?: true
   eventId?: true
   confirmationState?: true
   tableNumber?: true
@@ -295,6 +305,7 @@ export type ReservationGroupByOutputType = {
   tableType: string
   isPremium: boolean
   drinkPackage: string
+  overrideMinimumSpend: number | null
   eventId: string
   confirmationState: $Enums.ConfirmationState
   tableNumber: string | null
@@ -343,6 +354,7 @@ export type ReservationWhereInput = {
   tableType?: Prisma.StringFilter<"Reservation"> | string
   isPremium?: Prisma.BoolFilter<"Reservation"> | boolean
   drinkPackage?: Prisma.StringFilter<"Reservation"> | string
+  overrideMinimumSpend?: Prisma.IntNullableFilter<"Reservation"> | number | null
   eventId?: Prisma.StringFilter<"Reservation"> | string
   confirmationState?: Prisma.EnumConfirmationStateFilter<"Reservation"> | $Enums.ConfirmationState
   tableNumber?: Prisma.StringNullableFilter<"Reservation"> | string | null
@@ -369,6 +381,7 @@ export type ReservationOrderByWithRelationInput = {
   tableType?: Prisma.SortOrder
   isPremium?: Prisma.SortOrder
   drinkPackage?: Prisma.SortOrder
+  overrideMinimumSpend?: Prisma.SortOrderInput | Prisma.SortOrder
   eventId?: Prisma.SortOrder
   confirmationState?: Prisma.SortOrder
   tableNumber?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -398,6 +411,7 @@ export type ReservationWhereUniqueInput = Prisma.AtLeast<{
   tableType?: Prisma.StringFilter<"Reservation"> | string
   isPremium?: Prisma.BoolFilter<"Reservation"> | boolean
   drinkPackage?: Prisma.StringFilter<"Reservation"> | string
+  overrideMinimumSpend?: Prisma.IntNullableFilter<"Reservation"> | number | null
   eventId?: Prisma.StringFilter<"Reservation"> | string
   confirmationState?: Prisma.EnumConfirmationStateFilter<"Reservation"> | $Enums.ConfirmationState
   tableNumber?: Prisma.StringNullableFilter<"Reservation"> | string | null
@@ -424,6 +438,7 @@ export type ReservationOrderByWithAggregationInput = {
   tableType?: Prisma.SortOrder
   isPremium?: Prisma.SortOrder
   drinkPackage?: Prisma.SortOrder
+  overrideMinimumSpend?: Prisma.SortOrderInput | Prisma.SortOrder
   eventId?: Prisma.SortOrder
   confirmationState?: Prisma.SortOrder
   tableNumber?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -457,6 +472,7 @@ export type ReservationScalarWhereWithAggregatesInput = {
   tableType?: Prisma.StringWithAggregatesFilter<"Reservation"> | string
   isPremium?: Prisma.BoolWithAggregatesFilter<"Reservation"> | boolean
   drinkPackage?: Prisma.StringWithAggregatesFilter<"Reservation"> | string
+  overrideMinimumSpend?: Prisma.IntNullableWithAggregatesFilter<"Reservation"> | number | null
   eventId?: Prisma.StringWithAggregatesFilter<"Reservation"> | string
   confirmationState?: Prisma.EnumConfirmationStateWithAggregatesFilter<"Reservation"> | $Enums.ConfirmationState
   tableNumber?: Prisma.StringNullableWithAggregatesFilter<"Reservation"> | string | null
@@ -482,6 +498,7 @@ export type ReservationCreateInput = {
   tableType?: string
   isPremium?: boolean
   drinkPackage?: string
+  overrideMinimumSpend?: number | null
   confirmationState?: $Enums.ConfirmationState
   tableNumber?: string | null
   invoiceUrl?: string | null
@@ -507,6 +524,7 @@ export type ReservationUncheckedCreateInput = {
   tableType?: string
   isPremium?: boolean
   drinkPackage?: string
+  overrideMinimumSpend?: number | null
   eventId: string
   confirmationState?: $Enums.ConfirmationState
   tableNumber?: string | null
@@ -532,6 +550,7 @@ export type ReservationUpdateInput = {
   tableType?: Prisma.StringFieldUpdateOperationsInput | string
   isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   drinkPackage?: Prisma.StringFieldUpdateOperationsInput | string
+  overrideMinimumSpend?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   confirmationState?: Prisma.EnumConfirmationStateFieldUpdateOperationsInput | $Enums.ConfirmationState
   tableNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invoiceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -557,6 +576,7 @@ export type ReservationUncheckedUpdateInput = {
   tableType?: Prisma.StringFieldUpdateOperationsInput | string
   isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   drinkPackage?: Prisma.StringFieldUpdateOperationsInput | string
+  overrideMinimumSpend?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   eventId?: Prisma.StringFieldUpdateOperationsInput | string
   confirmationState?: Prisma.EnumConfirmationStateFieldUpdateOperationsInput | $Enums.ConfirmationState
   tableNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -582,6 +602,7 @@ export type ReservationCreateManyInput = {
   tableType?: string
   isPremium?: boolean
   drinkPackage?: string
+  overrideMinimumSpend?: number | null
   eventId: string
   confirmationState?: $Enums.ConfirmationState
   tableNumber?: string | null
@@ -607,6 +628,7 @@ export type ReservationUpdateManyMutationInput = {
   tableType?: Prisma.StringFieldUpdateOperationsInput | string
   isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   drinkPackage?: Prisma.StringFieldUpdateOperationsInput | string
+  overrideMinimumSpend?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   confirmationState?: Prisma.EnumConfirmationStateFieldUpdateOperationsInput | $Enums.ConfirmationState
   tableNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invoiceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -631,6 +653,7 @@ export type ReservationUncheckedUpdateManyInput = {
   tableType?: Prisma.StringFieldUpdateOperationsInput | string
   isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   drinkPackage?: Prisma.StringFieldUpdateOperationsInput | string
+  overrideMinimumSpend?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   eventId?: Prisma.StringFieldUpdateOperationsInput | string
   confirmationState?: Prisma.EnumConfirmationStateFieldUpdateOperationsInput | $Enums.ConfirmationState
   tableNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -666,6 +689,7 @@ export type ReservationCountOrderByAggregateInput = {
   tableType?: Prisma.SortOrder
   isPremium?: Prisma.SortOrder
   drinkPackage?: Prisma.SortOrder
+  overrideMinimumSpend?: Prisma.SortOrder
   eventId?: Prisma.SortOrder
   confirmationState?: Prisma.SortOrder
   tableNumber?: Prisma.SortOrder
@@ -679,6 +703,7 @@ export type ReservationCountOrderByAggregateInput = {
 
 export type ReservationAvgOrderByAggregateInput = {
   people?: Prisma.SortOrder
+  overrideMinimumSpend?: Prisma.SortOrder
 }
 
 export type ReservationMaxOrderByAggregateInput = {
@@ -695,6 +720,7 @@ export type ReservationMaxOrderByAggregateInput = {
   tableType?: Prisma.SortOrder
   isPremium?: Prisma.SortOrder
   drinkPackage?: Prisma.SortOrder
+  overrideMinimumSpend?: Prisma.SortOrder
   eventId?: Prisma.SortOrder
   confirmationState?: Prisma.SortOrder
   tableNumber?: Prisma.SortOrder
@@ -720,6 +746,7 @@ export type ReservationMinOrderByAggregateInput = {
   tableType?: Prisma.SortOrder
   isPremium?: Prisma.SortOrder
   drinkPackage?: Prisma.SortOrder
+  overrideMinimumSpend?: Prisma.SortOrder
   eventId?: Prisma.SortOrder
   confirmationState?: Prisma.SortOrder
   tableNumber?: Prisma.SortOrder
@@ -733,6 +760,7 @@ export type ReservationMinOrderByAggregateInput = {
 
 export type ReservationSumOrderByAggregateInput = {
   people?: Prisma.SortOrder
+  overrideMinimumSpend?: Prisma.SortOrder
 }
 
 export type ReservationCreateNestedManyWithoutEventInput = {
@@ -807,6 +835,7 @@ export type ReservationCreateWithoutEventInput = {
   tableType?: string
   isPremium?: boolean
   drinkPackage?: string
+  overrideMinimumSpend?: number | null
   confirmationState?: $Enums.ConfirmationState
   tableNumber?: string | null
   invoiceUrl?: string | null
@@ -831,6 +860,7 @@ export type ReservationUncheckedCreateWithoutEventInput = {
   tableType?: string
   isPremium?: boolean
   drinkPackage?: string
+  overrideMinimumSpend?: number | null
   confirmationState?: $Enums.ConfirmationState
   tableNumber?: string | null
   invoiceUrl?: string | null
@@ -884,6 +914,7 @@ export type ReservationScalarWhereInput = {
   tableType?: Prisma.StringFilter<"Reservation"> | string
   isPremium?: Prisma.BoolFilter<"Reservation"> | boolean
   drinkPackage?: Prisma.StringFilter<"Reservation"> | string
+  overrideMinimumSpend?: Prisma.IntNullableFilter<"Reservation"> | number | null
   eventId?: Prisma.StringFilter<"Reservation"> | string
   confirmationState?: Prisma.EnumConfirmationStateFilter<"Reservation"> | $Enums.ConfirmationState
   tableNumber?: Prisma.StringNullableFilter<"Reservation"> | string | null
@@ -909,6 +940,7 @@ export type ReservationCreateManyEventInput = {
   tableType?: string
   isPremium?: boolean
   drinkPackage?: string
+  overrideMinimumSpend?: number | null
   confirmationState?: $Enums.ConfirmationState
   tableNumber?: string | null
   invoiceUrl?: string | null
@@ -933,6 +965,7 @@ export type ReservationUpdateWithoutEventInput = {
   tableType?: Prisma.StringFieldUpdateOperationsInput | string
   isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   drinkPackage?: Prisma.StringFieldUpdateOperationsInput | string
+  overrideMinimumSpend?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   confirmationState?: Prisma.EnumConfirmationStateFieldUpdateOperationsInput | $Enums.ConfirmationState
   tableNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invoiceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -957,6 +990,7 @@ export type ReservationUncheckedUpdateWithoutEventInput = {
   tableType?: Prisma.StringFieldUpdateOperationsInput | string
   isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   drinkPackage?: Prisma.StringFieldUpdateOperationsInput | string
+  overrideMinimumSpend?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   confirmationState?: Prisma.EnumConfirmationStateFieldUpdateOperationsInput | $Enums.ConfirmationState
   tableNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invoiceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -981,6 +1015,7 @@ export type ReservationUncheckedUpdateManyWithoutEventInput = {
   tableType?: Prisma.StringFieldUpdateOperationsInput | string
   isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   drinkPackage?: Prisma.StringFieldUpdateOperationsInput | string
+  overrideMinimumSpend?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   confirmationState?: Prisma.EnumConfirmationStateFieldUpdateOperationsInput | $Enums.ConfirmationState
   tableNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invoiceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1007,6 +1042,7 @@ export type ReservationSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   tableType?: boolean
   isPremium?: boolean
   drinkPackage?: boolean
+  overrideMinimumSpend?: boolean
   eventId?: boolean
   confirmationState?: boolean
   tableNumber?: boolean
@@ -1033,6 +1069,7 @@ export type ReservationSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   tableType?: boolean
   isPremium?: boolean
   drinkPackage?: boolean
+  overrideMinimumSpend?: boolean
   eventId?: boolean
   confirmationState?: boolean
   tableNumber?: boolean
@@ -1059,6 +1096,7 @@ export type ReservationSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   tableType?: boolean
   isPremium?: boolean
   drinkPackage?: boolean
+  overrideMinimumSpend?: boolean
   eventId?: boolean
   confirmationState?: boolean
   tableNumber?: boolean
@@ -1085,6 +1123,7 @@ export type ReservationSelectScalar = {
   tableType?: boolean
   isPremium?: boolean
   drinkPackage?: boolean
+  overrideMinimumSpend?: boolean
   eventId?: boolean
   confirmationState?: boolean
   tableNumber?: boolean
@@ -1096,7 +1135,7 @@ export type ReservationSelectScalar = {
   createdAt?: boolean
 }
 
-export type ReservationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "phone" | "streetAddress" | "city" | "zipCode" | "people" | "occasion" | "ticketsNeeded" | "tableType" | "isPremium" | "drinkPackage" | "eventId" | "confirmationState" | "tableNumber" | "invoiceUrl" | "payed" | "notified" | "cancellationMailSent" | "paymentReminderSent" | "createdAt", ExtArgs["result"]["reservation"]>
+export type ReservationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "phone" | "streetAddress" | "city" | "zipCode" | "people" | "occasion" | "ticketsNeeded" | "tableType" | "isPremium" | "drinkPackage" | "overrideMinimumSpend" | "eventId" | "confirmationState" | "tableNumber" | "invoiceUrl" | "payed" | "notified" | "cancellationMailSent" | "paymentReminderSent" | "createdAt", ExtArgs["result"]["reservation"]>
 export type ReservationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   event?: boolean | Prisma.EventDefaultArgs<ExtArgs>
 }
@@ -1126,6 +1165,7 @@ export type $ReservationPayload<ExtArgs extends runtime.Types.Extensions.Interna
     tableType: string
     isPremium: boolean
     drinkPackage: string
+    overrideMinimumSpend: number | null
     eventId: string
     confirmationState: $Enums.ConfirmationState
     tableNumber: string | null
@@ -1572,6 +1612,7 @@ export interface ReservationFieldRefs {
   readonly tableType: Prisma.FieldRef<"Reservation", 'String'>
   readonly isPremium: Prisma.FieldRef<"Reservation", 'Boolean'>
   readonly drinkPackage: Prisma.FieldRef<"Reservation", 'String'>
+  readonly overrideMinimumSpend: Prisma.FieldRef<"Reservation", 'Int'>
   readonly eventId: Prisma.FieldRef<"Reservation", 'String'>
   readonly confirmationState: Prisma.FieldRef<"Reservation", 'ConfirmationState'>
   readonly tableNumber: Prisma.FieldRef<"Reservation", 'String'>

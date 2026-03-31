@@ -16,6 +16,7 @@ export function fullReservationPrice(reservation: {
   people: number;
   ticketsNeeded: boolean;
   isPremium: boolean;
+  overrideMinimumSpend: number | null;
   event: {
     minimumSpend: number;
     ticketPrice: number;
@@ -33,14 +34,15 @@ export function fullReservationPrice(reservation: {
 export function reservationMinimumSpendPrice(reservation: {
   people: number;
   isPremium: boolean;
+  overrideMinimumSpend: number | null;
   event: {
     minimumSpendMode: MinimumSpendMode;
     minimumSpend: number;
     minimumSpendPremium: number | null;
   };
 }): number {
-  const { event, people, isPremium } = reservation;
-
+  const { event, people, isPremium, overrideMinimumSpend } = reservation;
+  if (overrideMinimumSpend) return overrideMinimumSpend;
   if (isPremium && event.minimumSpendPremium !== null) {
     if (event.minimumSpendMode === 'PerCapita') {
       return people * event.minimumSpendPremium;

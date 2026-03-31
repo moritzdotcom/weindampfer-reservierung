@@ -35,6 +35,7 @@ export default function ReservationCostSummary({
 
   const totalMinimumSpend = reservationMinimumSpendPrice({
     people: personCount,
+    overrideMinimumSpend: null,
     isPremium,
     event,
   });
