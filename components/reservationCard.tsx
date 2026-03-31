@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { FormEvent, useRef, useState } from 'react';
+import { FormEvent, useEffect, useRef, useState } from 'react';
 import { ApiGetReservationsResponse } from '@/pages/api/events/[eventId]/reservations';
 import {
   Box,
@@ -26,15 +26,19 @@ import {
   reservationMinimumSpendPrice,
   reservationTicketPrice,
 } from '@/lib/reservation';
+import { fullEventName } from '@/lib/event';
+import { ApiGetEventsResponse } from '@/pages/api/events';
 
 export default function ReservationCard({
   reservation,
   doubleBooking,
   onUpdate,
+  events,
 }: {
   reservation: ApiGetReservationsResponse[number];
   doubleBooking?: ApiGetReservationsResponse[number];
   onUpdate: (reservation: ApiGetReservationsResponse[number]) => void;
+  events: ApiGetEventsResponse;
 }) {
   const [paymentDialogOpen, setPaymentDialogOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -44,7 +48,10 @@ export default function ReservationCard({
   const [savingTableNumber, setSavingTableNumber] = useState(false);
 
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
+  const [changeEventDialogOpen, setChangeEventDialogOpen] = useState(false);
+
   const [cancelReason, setCancelReason] = useState('');
+  const [selectedEventId, setSelectedEventId] = useState(reservation.eventId);
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
@@ -73,6 +80,16 @@ export default function ReservationCard({
       reason: cancelReason,
     });
     onUpdate({ ...reservation, confirmationState: 'CANCELLED' });
+    setAnchorEl(null);
+  };
+
+  const handleChangeEvent = async () => {
+    await axios.post(`/api/reservations/${reservation.id}/changeEvent`, {
+      eventId: selectedEventId,
+    });
+    const event = events.find((e) => e.id === selectedEventId);
+    if (!event) return;
+    onUpdate({ ...reservation, event, eventId: selectedEventId });
     setAnchorEl(null);
   };
 
@@ -134,6 +151,10 @@ export default function ReservationCard({
       alert('Fehler beim Laden der Rechnung');
     }
   }
+
+  useEffect(() => {
+    if (reservation.eventId) setSelectedEventId(reservation.eventId);
+  }, [reservation.eventId]);
 
   return (
     <motion.div
@@ -323,6 +344,15 @@ export default function ReservationCard({
         >
           Stornieren & benachrichtigen
         </MenuItem>
+        <Divider />
+        <MenuItem
+          onClick={() => {
+            setAnchorEl(null);
+            setChangeEventDialogOpen(true);
+          }}
+        >
+          Verschieben & benachrichtigen
+        </MenuItem>
       </Menu>
       <Dialog
         open={paymentDialogOpen}
@@ -403,6 +433,62 @@ export default function ReservationCard({
             onClick={handleCancelReservation}
           >
             Stornieren
+          </button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={changeEventDialogOpen}
+        onClose={() => setChangeEventDialogOpen(false)}
+        slotProps={{ paper: { sx: { background: 'var(--color-black)' } } }}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle sx={{ color: 'white' }}>
+          Reservierung Verschieben
+        </DialogTitle>
+        <DialogContent>
+          <p className="text-lg mb-3 text-gray-300">
+            Bitte wähle das neue Event aus.
+          </p>
+          <TextField
+            select
+            label="Veranstaltung wählen"
+            value={selectedEventId || ''}
+            fullWidth
+            onChange={(e) => {
+              setSelectedEventId(e.target.value);
+            }}
+          >
+            {events.map((event) => (
+              <MenuItem key={event.id} value={event.id}>
+                {fullEventName(event)}
+              </MenuItem>
+            ))}
+          </TextField>
+        </DialogContent>
+        <DialogActions
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            px: 3,
+            pb: 2,
+            pt: 1,
+            backgroundColor: 'var(--color-black)',
+          }}
+        >
+          <button
+            className="w-full shadow rounded bg-neutral-900 hover:bg-neutral-600 px-3 py-2 transition hover:scale-105 mr-3"
+            onClick={() => setChangeEventDialogOpen(false)}
+          >
+            Abbrechen
+          </button>
+          <button
+            disabled={selectedEventId === reservation.eventId}
+            className="w-full shadow rounded text-white bg-amber-600 hover:bg-amber-700 px-3 py-2 ml-3 disabled:opacity-70"
+            onClick={handleChangeEvent}
+          >
+            Verschieben
           </button>
         </DialogActions>
       </Dialog>

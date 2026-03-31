@@ -32,20 +32,23 @@ export default function BackendReservationsPage({
 
   const selectedEvent = useMemo(
     () => events.filter((e) => e.id == selectedEventId)[0],
-    [selectedEventId, events]
+    [selectedEventId, events],
   );
 
   const filteredReservations = useMemo(() => {
-    return reservations?.filter((r) => r.confirmationState == 'CONFIRMED');
+    return reservations?.filter(
+      (r) =>
+        r.confirmationState == 'CONFIRMED' && r.eventId === selectedEventId,
+    );
   }, [reservations]);
 
   const updateReservation = (
-    reservation: ApiGetReservationsResponse[number]
+    reservation: ApiGetReservationsResponse[number],
   ) => {
     setReservations((res) =>
       res
         ? res.map((r) => (r.id == reservation.id ? reservation : r))
-        : undefined
+        : undefined,
     );
   };
 
@@ -69,8 +72,8 @@ export default function BackendReservationsPage({
         } else {
           setSelectedEventId(
             data.sort(
-              (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-            )[0].id
+              (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+            )[0].id,
           );
         }
       });
@@ -100,7 +103,7 @@ export default function BackendReservationsPage({
               onClick={() => {
                 window.open(
                   `/api/events/${selectedEvent.id}/guestListPdf`,
-                  '_blank'
+                  '_blank',
                 );
               }}
             >
@@ -172,7 +175,7 @@ export default function BackendReservationsPage({
                   <br />
                   {filteredReservations.reduce(
                     (sum, r) => sum + r.people,
-                    0
+                    0,
                   )}{' '}
                   Personen
                   <br />
@@ -186,14 +189,14 @@ export default function BackendReservationsPage({
                 .sort(
                   (a, b) =>
                     new Date(b.createdAt).getTime() -
-                    new Date(a.createdAt).getTime()
+                    new Date(a.createdAt).getTime(),
                 )
                 .map((reservation) => {
                   const doubleBooking = filteredReservations.find(
                     (r) =>
                       r.id !== reservation.id &&
                       r.tableNumber == reservation.tableNumber &&
-                      reservation.tableNumber
+                      reservation.tableNumber,
                   );
                   return (
                     <ReservationCard
@@ -201,6 +204,7 @@ export default function BackendReservationsPage({
                       doubleBooking={doubleBooking}
                       reservation={reservation}
                       onUpdate={updateReservation}
+                      events={events}
                     />
                   );
                 })}
