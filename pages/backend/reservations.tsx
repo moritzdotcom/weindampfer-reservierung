@@ -17,6 +17,7 @@ import { ApiGetReservationsResponse } from '../api/events/[eventId]/reservations
 import { formatEventDate, fullEventName } from '@/lib/event';
 import ReservationCard from '@/components/reservationCard';
 import BackendBackButton from '@/components/backendBackButton';
+import { reservationMinimumSpendPrice } from '@/lib/reservation';
 
 export default function BackendReservationsPage({
   session,
@@ -183,6 +184,13 @@ export default function BackendReservationsPage({
                     .filter((r) => r.ticketsNeeded)
                     .reduce((sum, r) => sum + r.people, 0)}{' '}
                   Tickets benötigt
+                  <br />
+                  {filteredReservations.reduce(
+                    (sum, r) => sum + reservationMinimumSpendPrice(r),
+                    0,
+                  )}
+                  {' € '}
+                  Mindestverzehr
                 </p>
               </motion.div>
               {filteredReservations
