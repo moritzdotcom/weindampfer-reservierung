@@ -42,7 +42,7 @@ export function reservationMinimumSpendPrice(reservation: {
   };
 }): number {
   const { event, people, isPremium, overrideMinimumSpend } = reservation;
-  if (overrideMinimumSpend) return overrideMinimumSpend;
+  if (typeof overrideMinimumSpend == 'number') return overrideMinimumSpend;
   if (isPremium && event.minimumSpendPremium !== null) {
     if (event.minimumSpendMode === 'PerCapita') {
       return people * event.minimumSpendPremium;
