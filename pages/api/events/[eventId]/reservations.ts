@@ -26,6 +26,7 @@ export type ApiGetReservationsResponse = Prisma.ReservationGetPayload<{
   include: {
     event: {
       select: {
+        date: true;
         minimumSpend: true;
         ticketPrice: true;
         minimumSpendPremium: true;
@@ -46,6 +47,7 @@ async function handleGET(
     include: {
       event: {
         select: {
+          date: true,
           minimumSpend: true,
           ticketPrice: true,
           minimumSpendPremium: true,

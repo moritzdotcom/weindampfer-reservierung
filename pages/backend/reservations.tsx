@@ -213,6 +213,7 @@ export default function BackendReservationsPage({
                       reservation={reservation}
                       onUpdate={updateReservation}
                       events={events}
+                      session={session}
                     />
                   );
                 })}

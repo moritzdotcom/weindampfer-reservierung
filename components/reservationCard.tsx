@@ -22,23 +22,27 @@ import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import CheckIcon from '@mui/icons-material/Check';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import {
+  buildWhatsAppReservationLink,
   fullReservationPrice,
   reservationMinimumSpendPrice,
   reservationTicketPrice,
 } from '@/lib/reservation';
 import { fullEventName } from '@/lib/event';
 import { ApiGetEventsResponse } from '@/pages/api/events';
+import { Session } from '@/hooks/useSession';
 
 export default function ReservationCard({
   reservation,
   doubleBooking,
   onUpdate,
   events,
+  session,
 }: {
   reservation: ApiGetReservationsResponse[number];
   doubleBooking?: ApiGetReservationsResponse[number];
   onUpdate: (reservation: ApiGetReservationsResponse[number]) => void;
   events: ApiGetEventsResponse;
+  session: Session;
 }) {
   const [paymentDialogOpen, setPaymentDialogOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -139,7 +143,6 @@ export default function ReservationCard({
   }
 
   async function fetchInvoiceUrl(invoicePath: string) {
-    console.log(reservation);
     const res = await fetch(
       `/api/reservations/invoiceUrl?path=${encodeURIComponent(invoicePath)}`,
     );
@@ -151,6 +154,22 @@ export default function ReservationCard({
       alert('Fehler beim Laden der Rechnung');
     }
   }
+
+  const eventDate = reservation.event?.date
+    ? new Date(reservation.event.date).toLocaleDateString('de-DE', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+      })
+    : 'dem gebuchten Datum';
+
+  const whatsappLink = buildWhatsAppReservationLink({
+    phone: reservation.phone,
+    name: reservation.name,
+    date: eventDate,
+    people: reservation.people,
+    userName: session?.user?.name,
+  });
 
   useEffect(() => {
     if (reservation.eventId) setSelectedEventId(reservation.eventId);
@@ -186,7 +205,31 @@ export default function ReservationCard({
         {reservation.ticketsNeeded ? ` • Tickets benötigt` : ''}
       </Typography>
       <Typography className="text-sm text-gray-400 hover:text-gray-200 transition">
-        {reservation.email} / {reservation.phone}
+        <a
+          href={`mailto:${reservation.email}`}
+          className="hover:text-sky-400 transition underline-offset-2 hover:underline"
+        >
+          {reservation.email}
+        </a>
+
+        {reservation.phone && (
+          <>
+            {' / '}
+            {whatsappLink ? (
+              <a
+                href={whatsappLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-emerald-400 transition underline-offset-2 hover:underline"
+                title="WhatsApp Chat öffnen"
+              >
+                {reservation.phone}
+              </a>
+            ) : (
+              <span>{reservation.phone}</span>
+            )}
+          </>
+        )}
       </Typography>
       {reservation.streetAddress && (
         <Typography className="text-sm text-gray-400 hover:text-gray-200 transition">

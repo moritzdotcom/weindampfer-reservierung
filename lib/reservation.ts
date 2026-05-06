@@ -1,4 +1,5 @@
 import { MinimumSpendMode, ConfirmationState } from '@/prisma/generated/client';
+import { normalizePhoneForWhatsApp } from './helpers/phone';
 
 export function translateState(state: ConfirmationState) {
   if (state == 'REQUESTED') return 'Offen';
@@ -73,4 +74,26 @@ export function reservationTicketPrice(reservation: {
   } else {
     return ticketsNeeded ? people * event.ticketPrice : 0;
   }
+}
+
+export function buildWhatsAppReservationLink({
+  phone,
+  name,
+  date,
+  people,
+  userName,
+}: {
+  phone?: string | null;
+  name: string;
+  date: string;
+  people: number;
+  userName: string;
+}) {
+  const normalizedPhone = normalizePhoneForWhatsApp(phone);
+
+  if (!normalizedPhone) return null;
+
+  const message = `Hallo ${name}, ich bearbeite gerade deine Reservierung für den Weindampfer am ${date} und wollte fragen, ob alles noch so stimmt. Wenn ich die Reservierung für ${people} Personen bestätigen kann, gib mir gerne bescheid. Liebe Grüße ${userName} vom Weindampfer`;
+
+  return `https://wa.me/${normalizedPhone}?text=${encodeURIComponent(message)}`;
 }
