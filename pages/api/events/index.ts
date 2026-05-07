@@ -24,9 +24,9 @@ export default async function handle(
 export type ApiGetEventsResponse = Prisma.EventGetPayload<{}>[];
 
 async function handleGET(req: NextApiRequest, res: NextApiResponse) {
-  const oneWeekAgo = new Date(new Date().getTime() - 604800000);
+  const beginningOfYear = new Date(`${new Date().getFullYear()}-01-01`);
   const events = await prisma.event.findMany({
-    where: { date: { gte: oneWeekAgo } },
+    where: { date: { gte: beginningOfYear } },
   });
   return res.json(events);
 }
