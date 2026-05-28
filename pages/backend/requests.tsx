@@ -73,6 +73,15 @@ export default function BackendRequestsPage({ session }: { session: Session }) {
     );
   }, [reservations]);
 
+  const confirmedTableTypes = useMemo(() => {
+    const tableTypes = new Map<string, number>();
+    confirmedReservations?.forEach((res) => {
+      const count = tableTypes.get(res.tableType) || 0;
+      tableTypes.set(res.tableType, count + 1);
+    });
+    return tableTypes;
+  }, [confirmedReservations]);
+
   const updateState = async (
     reservationId: string,
     state: ConfirmationState,
@@ -228,6 +237,9 @@ export default function BackendRequestsPage({ session }: { session: Session }) {
                     onUpdateState={(state) =>
                       updateState(reservation.id, state)
                     }
+                    confirmedEmporeCount={
+                      confirmedTableTypes.get('Empore') || 0
+                    }
                     variants={{
                       hidden: { opacity: 0, x: -50 },
                       show: {
@@ -251,10 +263,12 @@ function ReservationCard({
   reservation,
   onUpdateState,
   variants,
+  confirmedEmporeCount,
 }: {
   reservation: ApiGetReservationsResponse[number];
   onUpdateState: (state: ConfirmationState) => void;
   variants: any;
+  confirmedEmporeCount: number;
 }) {
   const [animating, setAnimating] = useState<null | 'left' | 'right'>(null);
 
@@ -323,6 +337,12 @@ function ReservationCard({
               <WarningAmber fontSize="small" color="warning" />
             ) : null}
           </div>
+
+          {confirmedEmporeCount >= 2 && reservation.tableType == 'Empore' && (
+            <p className="text-amber-500">
+              Bereits {confirmedEmporeCount} Tische auf der Empore vergeben
+            </p>
+          )}
 
           <div className="flex gap-3 mt-4">
             {reservation.confirmationState !== 'CONFIRMED' && (

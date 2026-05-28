@@ -15,7 +15,7 @@ export default function ReservationFormWeindampfer({
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [personCount, setPersonCount] = useState('');
-  const [tableType, setTableType] = useState('Stehtisch');
+  const [tableType, setTableType] = useState('Egal');
   const [ticketsNeeded, setTicketsNeeded] = useState('yes');
   const [occasion, setOccasion] = useState('');
   const [phone, setPhone] = useState('');
@@ -44,6 +44,8 @@ export default function ReservationFormWeindampfer({
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
+
+  const emporeDisabled = Number(personCount) < 10;
 
   const resetErrorObj = () => {
     setErrorObj({
@@ -183,6 +185,10 @@ export default function ReservationFormWeindampfer({
   };
 
   useEffect(() => {
+    if (emporeDisabled) setTableType((tt) => (tt == 'Empore' ? 'Egal' : tt));
+  }, [emporeDisabled]);
+
+  useEffect(() => {
     if (formDirty) validateInputs();
   }, [
     name,
@@ -301,8 +307,11 @@ export default function ReservationFormWeindampfer({
             setTableType(e.target.value);
           }}
         >
+          <MenuItem value="Egal">Keine Präferenz</MenuItem>
           <MenuItem value="Stehtisch">Stehtisch auf der Tanzfläche</MenuItem>
-          <MenuItem value="Empore">Tisch auf der Empore</MenuItem>
+          <MenuItem disabled={emporeDisabled} value="Empore">
+            Tisch auf der Empore {emporeDisabled ? '(ab 10 Pers.)' : ''}
+          </MenuItem>
         </TextField>
         <TextField
           select
