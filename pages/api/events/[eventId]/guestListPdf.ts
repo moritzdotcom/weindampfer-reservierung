@@ -3,6 +3,7 @@ import prisma from '@/lib/prismadb';
 import { getServerSession } from '@/lib/session';
 import renderWeindampferPDF from '@/lib/pdf/weindampfer';
 import renderJeckeriaPDF from '@/lib/pdf/jeckeria';
+import renderBostonBarPDF from '@/lib/pdf/bostonbar';
 
 export default async function handle(
   req: NextApiRequest,
@@ -43,6 +44,8 @@ async function handleGET(
     return renderWeindampferPDF(res, event);
   } else if (event.eventType === 'JECKERIA') {
     return renderJeckeriaPDF(res, event);
+  } else if (event.eventType === 'BOSTONBAR') {
+    return renderBostonBarPDF(res, event);
   } else {
     return res.status(400).json('Invalid event type');
   }

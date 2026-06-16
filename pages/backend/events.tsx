@@ -243,6 +243,7 @@ function NewEventDialog({
         >
           <MenuItem value="WEINDAMPFER">Weindampfer</MenuItem>
           <MenuItem value="JECKERIA">Jeckeria</MenuItem>
+          <MenuItem value="BOSTONBAR">Boston Bar</MenuItem>
         </TextField>
         <TextField
           select

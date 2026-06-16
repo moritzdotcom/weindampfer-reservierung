@@ -28,7 +28,8 @@ export type MinimumSpendMode = (typeof MinimumSpendMode)[keyof typeof MinimumSpe
 
 export const EventType = {
   WEINDAMPFER: 'WEINDAMPFER',
-  JECKERIA: 'JECKERIA'
+  JECKERIA: 'JECKERIA',
+  BOSTONBAR: 'BOSTONBAR'
 } as const
 
 export type EventType = (typeof EventType)[keyof typeof EventType]

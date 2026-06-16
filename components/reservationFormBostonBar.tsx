@@ -1,12 +1,11 @@
 import { Event } from '@/prisma/generated/client';
-import { Button, Divider, MenuItem, TextField } from '@mui/material';
+import { Divider, MenuItem, TextField } from '@mui/material';
 import axios from 'axios';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import ARGBConfirmation from './argbConfirmation';
 import ReservationCostSummary from './reservationCostSummary';
-import JeckeriaSeatingPlanPicker from './jeckeriaSeatingPlanPicker';
 
-export default function ReservationFormJeckeria({
+export default function ReservationFormBostonBar({
   event,
   onSuccess,
 }: {
@@ -16,12 +15,7 @@ export default function ReservationFormJeckeria({
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [personCount, setPersonCount] = useState('');
-  const [tableType, setTableType] = useState<
-    'Jecken-Tisch' | 'Bühne' | 'Dancefloor'
-  >('Dancefloor');
-  const [drinkPackage, setDrinkPackage] = useState('Fass-Alt');
-  const [ticketsNeeded, setTicketsNeeded] = useState('yes');
-  const [occasion, setOccasion] = useState('');
+  const [tableType, setTableType] = useState('Egal');
   const [phone, setPhone] = useState('');
   const [streetAddress, setStreetAddress] = useState('');
   const [city, setCity] = useState('');
@@ -29,18 +23,10 @@ export default function ReservationFormJeckeria({
   const [argbChecked, setArgbChecked] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const isPremium = tableType === 'Bühne';
-  const maxPeople = useMemo(() => {
-    if (tableType === 'Bühne') return 6;
-    if (tableType === 'Jecken-Tisch') return 8;
-    return 8;
-  }, [tableType]);
-
   const [errorObj, setErrorObj] = useState({
     name: '',
     email: '',
     personCount: '',
-    ticketsNeeded: '',
     submit: '',
     phone: '',
     streetAddress: '',
@@ -60,7 +46,6 @@ export default function ReservationFormJeckeria({
       name: '',
       email: '',
       personCount: '',
-      ticketsNeeded: '',
       submit: '',
       phone: '',
       streetAddress: '',
@@ -85,23 +70,16 @@ export default function ReservationFormJeckeria({
         email: 'E-Mail darf nicht leer sein',
       }));
     }
-    if (Number(personCount) < 4 || Number(personCount) > maxPeople) {
+    if (Number(personCount) < 6 || Number(personCount) > 25) {
       errorOccured = true;
       setErrorObj((prev) => ({
         ...prev,
-        personCount: `Anzahl muss zwischen 4 und ${maxPeople} liegen`,
+        personCount: 'Anzahl muss zwischen 6 und 25 liegen',
       }));
     }
     if (!name) {
       errorOccured = true;
       setErrorObj((prev) => ({ ...prev, name: 'Name darf nicht leer sein' }));
-    }
-    if (!ticketsNeeded) {
-      errorOccured = true;
-      setErrorObj((prev) => ({
-        ...prev,
-        ticketsNeeded: 'Bitte wähle eine Option',
-      }));
     }
     if (!argbChecked) {
       errorOccured = true;
@@ -151,24 +129,19 @@ export default function ReservationFormJeckeria({
         name,
         email,
         people: Number(personCount),
+        ticketsNeeded: false,
         tableType,
-        ticketsNeeded: ticketsNeeded === 'yes',
-        occasion,
-        drinkPackage,
         phone,
         streetAddress,
         city,
         zipCode,
-        isPremium: tableType === 'Bühne',
       });
       // Reset form after successful submission
       resetErrorObj();
       setName('');
       setEmail('');
       setPersonCount('');
-      setTableType('Dancefloor');
-      setTicketsNeeded('yes');
-      setOccasion('');
+      setTableType('Stehtisch');
       setPhone('');
       setStreetAddress('');
       setCity('');
@@ -193,20 +166,12 @@ export default function ReservationFormJeckeria({
     email,
     personCount,
     tableType,
-    ticketsNeeded,
-    occasion,
     phone,
     streetAddress,
     city,
     zipCode,
     argbChecked,
   ]);
-
-  useEffect(() => {
-    if (Number(personCount) > maxPeople) {
-      setPersonCount(maxPeople.toString());
-    }
-  }, [maxPeople]);
 
   return (
     <div>
@@ -292,93 +257,33 @@ export default function ReservationFormJeckeria({
           Angaben zur Reservierung
         </Divider>
         <TextField
+          label="Anzahl Personen"
+          type="number"
+          required
+          error={Boolean(errorObj.personCount)}
+          helperText={errorObj.personCount}
+          slotProps={{ htmlInput: { min: 6, max: 25 } }}
+          value={personCount}
+          onChange={(e) => setPersonCount(e.target.value)}
+          fullWidth
+        />
+        <TextField
           select
           label="Tischart wählen"
           fullWidth
           value={tableType}
           onChange={(e) => {
-            setTableType(
-              e.target.value as 'Jecken-Tisch' | 'Bühne' | 'Dancefloor',
-            );
+            setTableType(e.target.value);
           }}
         >
-          <MenuItem disabled value="Jecken-Tisch">
-            Jecken-Tisch (Ausverkauft)
-          </MenuItem>
-          <MenuItem value="Dancefloor">
-            Jecken-Stehtisch auf der Tanzfläche
-          </MenuItem>
-          <MenuItem value="Bühne">Jecken-Stehtisch auf der Bühne</MenuItem>
+          <MenuItem value="Egal">Keine Präferenz</MenuItem>
+          <MenuItem value="Eingang">Tisch an der Bar</MenuItem>
+          <MenuItem value="Hinten">Tisch an der Tanzfläche</MenuItem>
         </TextField>
-        <div className="max-w-sm mx-auto">
-          <JeckeriaSeatingPlanPicker
-            value={tableType}
-            onChange={(next) => setTableType(next)}
-          />
-        </div>
-        <TextField
-          select
-          label="Anzahl Personen"
-          fullWidth
-          helperText={errorObj.personCount || `Maximal ${maxPeople} Personen`}
-          value={personCount}
-          onChange={(e) => {
-            setPersonCount(e.target.value);
-          }}
-        >
-          <MenuItem value="4">4 Personen</MenuItem>
-          <MenuItem value="5">5 Personen</MenuItem>
-          <MenuItem value="6">6 Personen</MenuItem>
-          {tableType !== 'Bühne' && <MenuItem value="7">7 Personen</MenuItem>}
-          {tableType !== 'Bühne' && <MenuItem value="8">8 Personen</MenuItem>}
-        </TextField>
-        <TextField
-          select
-          label="Getränkepaket wählen"
-          fullWidth
-          value={drinkPackage}
-          onChange={(e) => {
-            setDrinkPackage(e.target.value);
-          }}
-        >
-          <MenuItem value="Fass-Alt">
-            {isPremium ? '10l Fass Alt + 1 Flasche Champagner' : '10l Fass Alt'}
-          </MenuItem>
-          <MenuItem value="Fass-Pils">
-            {isPremium
-              ? '10l Fass Pils + 1 Flasche Champagner'
-              : '10l Fass Pils'}
-          </MenuItem>
-          <MenuItem value="Weinpaket">
-            {isPremium
-              ? '120€ Weinguthaben + 1 Flasche Champagner'
-              : '120€ Weinguthaben'}
-          </MenuItem>
-        </TextField>
-        <TextField
-          select
-          label="Benötigst du Tickets?"
-          value={ticketsNeeded}
-          onChange={(e) => setTicketsNeeded(e.target.value)}
-          fullWidth
-          error={Boolean(errorObj.ticketsNeeded)}
-          helperText={errorObj.ticketsNeeded}
-        >
-          <MenuItem value="yes">Ja</MenuItem>
-          <MenuItem value="no">Nein (Habe schon welche)</MenuItem>
-        </TextField>
-        <TextField
-          fullWidth
-          label="Anlass"
-          value={occasion}
-          onChange={(e) => setOccasion(e.target.value)}
-          placeholder="z.B. Geburtstag, Jubiläum, etc."
-        />
+
         <ReservationCostSummary
           personCount={Number(personCount)}
-          ticketsNeeded={ticketsNeeded === 'yes'}
-          isPremium={tableType === 'Bühne'}
-          minimumSpendLabel="Getränkepaket"
+          ticketsNeeded={false}
           event={event}
         />
         <ARGBConfirmation onChecked={setArgbChecked} />
@@ -388,11 +293,9 @@ export default function ReservationFormJeckeria({
               {errorObj.submit}
             </div>
           )}
-          <Button
+          <button
             onClick={onSubmit}
-            color="primary"
-            variant="contained"
-            fullWidth
+            className="w-full bg-white hover:bg-gray-100 text-black font-semibold py-3 rounded-lg transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={
               !name ||
               !email ||
@@ -406,7 +309,7 @@ export default function ReservationFormJeckeria({
             }
           >
             {loading ? 'Sende Anfrage...' : 'Reservierung anfragen'}
-          </Button>
+          </button>
         </div>
       </div>
     </div>

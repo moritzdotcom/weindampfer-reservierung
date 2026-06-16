@@ -13,6 +13,7 @@ import { useMemo, useState } from 'react';
 import ReservationFormWeindampfer from './reservationFormWeindampfer';
 import ReservationFormJeckeria from './reservationFormJeckeria';
 import { jeckeriaTheme, weindampferTheme } from '@/theme';
+import ReservationFormBostonBar from './reservationFormBostonBar';
 
 export default function ReservationForm({ events }: { events: Event[] }) {
   const [selectedEventId, setSelectedEventId] = useState<string | null>(
@@ -138,6 +139,8 @@ function RenderEventTypeForm({
   switch (event.eventType) {
     case 'WEINDAMPFER':
       return <ReservationFormWeindampfer event={event} onSuccess={onSuccess} />;
+    case 'BOSTONBAR':
+      return <ReservationFormBostonBar event={event} onSuccess={onSuccess} />;
     case 'JECKERIA':
       return <ReservationFormJeckeria event={event} onSuccess={onSuccess} />;
     default:
@@ -252,6 +255,38 @@ function RenderEventTypeText({ event }: { event: Event | undefined }) {
           Wir freuen uns auf euch!
           <br />
           <p className="mt-4 block">Euer Jeckeria-Team</p>
+        </div>
+      );
+    case 'BOSTONBAR':
+      return (
+        <div className="text-neutral-400 leading-relaxed text-base sm:text-lg mt-8">
+          <p className="text-white text-xl font-semibold block mb-2">
+            Wilkommen liebe Boston Bar und Weindampfer Fans!
+          </p>
+          Hier könnt ihr ganz einfach euren Tisch für unser Event in der Boston
+          Bar reservieren.
+          <br />
+          <br />
+          <p className="text-white font-medium">
+            Eure Vorteile auf einen Blick:
+          </p>
+          <ul className="list-disc list-outside ml-4 mt-2 mb-4">
+            <li>Garantierter Einlass</li>
+            <li>Eigener Tisch & reservierter Bereich</li>
+            <li>Persönlicher Tischkellner</li>
+          </ul>
+          <p className="text-white font-medium">
+            So läuft die Reservierung ab:
+          </p>
+          <ul className="list-disc list-outside ml-4 mt-2 mb-4">
+            <li>Formular ausfüllen & absenden</li>
+            <li>Wir prüfen eure Anfrage und bestätigen sie per Mail</li>
+            <li>Ihr erhaltet eine Rechnung - Zahlung innerhalb von 7 Tagen</li>
+            <li>Nach Geldeingang erhaltet ihr eure finalen Unterlagen</li>
+          </ul>
+          Wir freuen uns auf euch!
+          <br />
+          <p className="mt-4 block">Euer Weindampfer-Team</p>
         </div>
       );
     default:

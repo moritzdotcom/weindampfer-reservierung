@@ -42,7 +42,7 @@ export function sendMail({
 }
 
 export function renderImage(eventType: EventType) {
-  if (eventType === 'WEINDAMPFER') {
+  if (eventType === 'WEINDAMPFER' || eventType === 'BOSTONBAR') {
     return `<img src="${
       process.env.PUBLIC_URL
     }logo-black.png" alt="Weindampfer Logo" style="max-width:200px; height:auto;" />`;
@@ -54,7 +54,7 @@ export function renderImage(eventType: EventType) {
 }
 
 export function renderGreeting(eventType: EventType) {
-  if (eventType === 'WEINDAMPFER') {
+  if (eventType === 'WEINDAMPFER' || eventType === 'BOSTONBAR') {
     return `Dein Weindampfer-Team`;
   } else if (eventType === 'JECKERIA') {
     return `Dein Jeckeria-Team`;

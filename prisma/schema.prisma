@@ -83,4 +83,5 @@ enum MinimumSpendMode {
 enum EventType {
   WEINDAMPFER
   JECKERIA
+  BOSTONBAR
 }
