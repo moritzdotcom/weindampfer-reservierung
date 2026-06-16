@@ -261,10 +261,15 @@ export default function ReservationFormBostonBar({
           type="number"
           required
           error={Boolean(errorObj.personCount)}
-          helperText={errorObj.personCount}
-          slotProps={{ htmlInput: { min: 6, max: 25 } }}
+          helperText={errorObj.personCount || 'Max. 10 Personen'}
+          slotProps={{ htmlInput: { min: 6, max: 10 } }}
           value={personCount}
           onChange={(e) => setPersonCount(e.target.value)}
+          onBlur={() => {
+            setPersonCount((c) =>
+              c ? Math.min(10, Math.max(Number(c), 1)).toString() : '',
+            );
+          }}
           fullWidth
         />
         <TextField
@@ -277,8 +282,8 @@ export default function ReservationFormBostonBar({
           }}
         >
           <MenuItem value="Egal">Keine Präferenz</MenuItem>
-          <MenuItem value="Eingang">Tisch an der Bar</MenuItem>
-          <MenuItem value="Hinten">Tisch an der Tanzfläche</MenuItem>
+          <MenuItem value="Arena">Tisch in der Arena</MenuItem>
+          <MenuItem value="Lounge">Lounge an der Bar</MenuItem>
         </TextField>
 
         <ReservationCostSummary
